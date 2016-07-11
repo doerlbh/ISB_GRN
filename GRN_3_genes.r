@@ -21,7 +21,7 @@ require(deSolve) # load the ode package
 
 x0 <- c(x1=0,x2=0,x3=0)       # startvalues    (genes)
 x0_1 = x0
-ph = 120
+ph = 5
 times <- seq(0,ph,0.1)  # time steps for output
 parms <- c()          # parameter (if necesarry)
 
