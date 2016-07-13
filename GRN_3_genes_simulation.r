@@ -43,7 +43,7 @@ K = mat.or.vec(n,n)   # gene-gene interaction (repress or activate)
 M = mat.or.vec(n,1)   # gene degradation rate
 
 # init values
-A[1] = A[2] = 2
+A[1] = A[2] = 3
 A[3] = 15
 M = M + 1
 K[2,1]=K[3,1]=K[3,2]=1
