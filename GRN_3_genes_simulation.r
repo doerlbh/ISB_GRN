@@ -42,8 +42,13 @@ A = mat.or.vec(n,1)   # gene synthesis rate
 K = mat.or.vec(n,n)   # gene-gene interaction (repress or activate) 
 M = mat.or.vec(n,1)   # gene degradation rate
 
+# Here we made a few assumptions:
+# 1) The synthesis of gene 1 and gene 2 are the same.
+# 2) In interactions, all activations are the same.
+# 3) In interactions, all repressions are the same.
+
 # init values
-A[1] = A[2] = 3
+A[1] = A[2] = 2
 A[3] = 15
 M = M + 1
 K[2,1]=K[3,1]=K[3,2]=1
