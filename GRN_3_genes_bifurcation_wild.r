@@ -145,7 +145,8 @@ for (j in 1:Ptrial){
   #maxY = max( c(max(x1r),max(x2r),max(x3r)))
   
   png(filename = paste("Wild_Bif_trial", trial,"_P", P0[j,1], "_", P0[j,2],
-                       "_", P0[j,3], "_", P0[j,4], "_", P0[j,5], 
+                       "_", P0[j,3], "_", P0[j,4], "_", P0[j,5], "_",
+                       P0[j,6], "_", P0[j,7], "_", P0[j,8], "_", P0[j,9], "_", P0[j,10],
                        "_rand0_", randset, "_Prand0_", Prandset,".png", sep=""), 
       width = 480, height = 480, 
       units = "px", pointsize = 12, bg = "white")
