@@ -133,14 +133,15 @@ for (j in 1:Ptrial){
   
   
   # plot gene time profiles                                                       
-  graphics.off()
-  windows(xpos=1,ypos=-50,width=n,height=4)
+  #graphics.off()
+  #windows(xpos=1,ypos=-50,width=n,height=4)
   
   maxY = max( c(max(x1r[1,]),max(x2r[1,]),max(x3r[1,])))
   #maxY = max( c(max(x1r),max(x2r),max(x3r)))
   
-  png(filename = paste("Bif_trial", trial, "_rand0_", randset, 
-                       "_Prand0_", Prandset,".png", sep=""), 
+  png(filename = paste("Bif_trial", trial,"_P", P0[j,1], "_", P0[j,2],
+                       "_", P0[j,3], "_", P0[j,4], "_", P0[j,5], 
+                       "_rand0_", randset, "_Prand0_", Prandset,".png", sep=""), 
       width = 480, height = 480, 
       units = "px", pointsize = 12, bg = "white")
   
@@ -154,3 +155,4 @@ for (j in 1:Ptrial){
   dev.off()
 
 }
+
