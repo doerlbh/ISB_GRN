@@ -30,16 +30,25 @@ rm(list=ls())
 require(deSolve) # load the ode package
 
 n = 3
-X = mat.or.vec(n,)   # gene number
+trial = 8
+#x0 = mat.or.vec(trial,n)   # startvalues (genes)
+#x0[1,] <- c(x1=0,x2=0,x3=0)      
+#x0[2,] <- c(x1=10,x2=0,x3=0)  
+#x0[3,] <- c(x1=0,x2=10,x3=0) 
+#x0[4,] <- c(x1=0,x2=0,x3=10)     
+#x0[5,] <- c(x1=10,x2=10,x3=0)     
+#x0[6,] <- c(x1=10,x2=0,x3=10)     
+#x0[7,] <- c(x1=0,x2=10,x3=10)     
+#x0[8,] <- c(x1=10,x2=10,x3=10)     
 
-x00 <- c(x1=0,x2=0,x3=0)       # startvalues    (genes)
-x01 <- c(x1=10,x2=0,x3=0)       # startvalues    (genes)
-x02 <- c(x1=0,x2=10,x3=0)       # startvalues    (genes)
-x03 <- c(x1=0,x2=0,x3=10)       # startvalues    (genes)
-x04 <- c(x1=10,x2=10,x3=0)       # startvalues    (genes)
-x05 <- c(x1=10,x2=0,x3=10)       # startvalues    (genes)
-x06 <- c(x1=0,x2=10,x3=10)       # startvalues    (genes)
-x07 <- c(x1=10,x2=10,x3=10)       # startvalues    (genes)
+x00 <- c(x1=0,x2=0,x3=0)     
+x01 <- c(x1=10,x2=0,x3=0)     
+x02 <- c(x1=0,x2=10,x3=0)     
+x03 <- c(x1=0,x2=0,x3=10)     
+x04 <- c(x1=10,x2=10,x3=0)     
+x05 <- c(x1=10,x2=0,x3=10)     
+x06 <- c(x1=0,x2=10,x3=10)     
+x07 <- c(x1=10,x2=10,x3=10)     
 
 #x0_1 = x0
 ph = 20
@@ -80,6 +89,20 @@ dx3 <-  A[3]*K[3,1]*x1*K[3,2]*x2 /((1 + K[3,1]*x1)*(1 + K[3,2]*x2)) - M[3]*x3
 }
 
 # solve ODE
+#time = mat.or.vec(trial,length(times))
+#x1r = mat.or.vec(trial,length(times))
+#x2r = mat.or.vec(trial,length(times))
+#x3r = mat.or.vec(trial,length(times))
+
+#for (i in 1:trial){
+#  res <- lsoda(x0[i,],times, func, parms)   # solve it
+#  res <- as.data.frame(res)             # make a data frame
+#  time[i,] <- res$time                      # time
+#  x1r[i,] <- res$x1                        
+#  x2r[i,] <- res$x2                         
+#  x3r[i,] <- res$x3                   
+#}
+
 res0 <- lsoda(x00,times, func, parms)   # solve it
 res0 <- as.data.frame(res0)             # make a data frame
 time0 <- res0$time                      # time
@@ -141,11 +164,42 @@ X73 <- res7$x3
 graphics.off()
 windows(xpos=1,ypos=-50,width=n,height=4)
 
-maxY = max( c(max(X1),max(X2),max(X3) ) )
+maxY = max( c(max(X01),max(X02),max(X03),max(X11),max(X12),max(X13),
+              max(X21),max(X22),max(X23),max(X31),max(X32),max(X33),
+              max(X41),max(X42),max(X43),max(X51),max(X52),max(X53),
+              max(X61),max(X62),max(X63),max(X71),max(X72),max(X73)))
          
-plot(time,X1,type="l",lwd=2,col=rgb(0,1,0), ylim=c(0, maxY) )
-lines(time,X2,lwd=2,col=rgb(1,0,0))
-lines(time,X3,lwd=2,col=rgb(0,0,1))
+plot(time,X01,type="l",lwd=2,col=rgb(0,1,0), ylim=c(0, maxY) )
+lines(time,X02,lwd=2,col=rgb(1,0,0))
+lines(time,X03,lwd=2,col=rgb(0,0,1))
+
+lines(time,X11,lwd=2,col=rgb(0,1,0))
+lines(time,X12,lwd=2,col=rgb(1,0,0))
+lines(time,X13,lwd=2,col=rgb(0,0,1))
+
+lines(time,X21,lwd=2,col=rgb(0,1,0))
+lines(time,X22,lwd=2,col=rgb(1,0,0))
+lines(time,X23,lwd=2,col=rgb(0,0,1))
+
+lines(time,X31,lwd=2,col=rgb(0,1,0))
+lines(time,X32,lwd=2,col=rgb(1,0,0))
+lines(time,X33,lwd=2,col=rgb(0,0,1))
+
+lines(time,X41,lwd=2,col=rgb(0,1,0))
+lines(time,X42,lwd=2,col=rgb(1,0,0))
+lines(time,X43,lwd=2,col=rgb(0,0,1))
+
+lines(time,X51,lwd=2,col=rgb(0,1,0))
+lines(time,X52,lwd=2,col=rgb(1,0,0))
+lines(time,X53,lwd=2,col=rgb(0,0,1))
+
+lines(time,X61,lwd=2,col=rgb(0,1,0))
+lines(time,X62,lwd=2,col=rgb(1,0,0))
+lines(time,X63,lwd=2,col=rgb(0,0,1))
+
+lines(time,X71,lwd=2,col=rgb(0,1,0))
+lines(time,X72,lwd=2,col=rgb(1,0,0))
+lines(time,X73,lwd=2,col=rgb(0,0,1))
 
 #legend(30, 50, c("X1", "X2", "X3"))
 
