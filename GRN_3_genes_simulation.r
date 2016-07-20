@@ -29,9 +29,17 @@
 rm(list=ls())
 require(deSolve) # load the ode package
 
-x0 <- c(x1=0,x2=0,x3=0)       # startvalues    (genes)
-x0_1 = x0
-ph = 5
+x00 <- c(x1=0,x2=0,x3=0)       # startvalues    (genes)
+x01 <- c(x1=10,x2=0,x3=0)       # startvalues    (genes)
+x02 <- c(x1=0,x2=10,x3=0)       # startvalues    (genes)
+x03 <- c(x1=0,x2=0,x3=10)       # startvalues    (genes)
+x04 <- c(x1=10,x2=10,x3=0)       # startvalues    (genes)
+x05 <- c(x1=10,x2=0,x3=10)       # startvalues    (genes)
+x06 <- c(x1=0,x2=10,x3=10)       # startvalues    (genes)
+x07 <- c(x1=10,x2=10,x3=10)       # startvalues    (genes)
+
+#x0_1 = x0
+ph = 20
 times <- seq(0,ph,0.1)  # time steps for output
 parms <- c()          # parameter (if necesarry)
 
