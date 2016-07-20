@@ -30,7 +30,7 @@ rm(list=ls())
 require(deSolve) # load the ode package
 
 n = 3
-trial = 20
+trial = 1000
 
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0[1,] <- c(x1=0,x2=0,x3=0)      
@@ -42,15 +42,12 @@ x0[6,] <- c(x1=10,x2=0,x3=10)
 x0[7,] <- c(x1=0,x2=10,x3=10)     
 x0[8,] <- c(x1=10,x2=10,x3=10)  
 
-set.seed(1)
+set.seed(1234)
 for (i in 9:trial){
-  x0r <- x0[i,]
-  names(x0r) = c("x1", "x2", "x3")
-  res <- lsoda(x0r,times, func, parms)   # solve it
-  res <- as.data.frame(res)             # make a data frame
-  x1r[i,] <- res$x1                        
-  x2r[i,] <- res$x2                         
-  x3r[i,] <- res$x3                   
+  x1t <- runif(1, 0, 1000)
+  x2t <- runif(1, 0, 1000)
+  x3t <- runif(1, 0, 1000)
+  x0[i,] <- c(x1t,x2t,x3t) 
 }
 
 #x00 <- c(x1=0,x2=0,x3=0)     
@@ -143,13 +140,14 @@ for (i in 1:trial){
 graphics.off()
 windows(xpos=1,ypos=-50,width=n,height=4)
 
-maxY = max( c(max(X01),max(X02),max(X03)))
+#maxY = max( c(max(X01),max(X02),max(X03)))
 #maxY = max( c(max(X01),max(X02),max(X03),max(X11),max(X12),max(X13),
 #              max(X21),max(X22),max(X23),max(X31),max(X32),max(X33),
 #              max(X41),max(X42),max(X43),max(X51),max(X52),max(X53),
 #              max(X61),max(X62),max(X63),max(X71),max(X72),max(X73)))
 
 maxY = max( c(max(x1r[1,]),max(x2r[1,]),max(x3r[1,])))
+#maxY = max( c(max(x1r),max(x2r),max(x3r)))
 
 plot(times,x1r[1,],type="l",lwd=2,col=rgb(0,1,0), ylim=c(0, maxY) )
 for (i in 1:trial){
