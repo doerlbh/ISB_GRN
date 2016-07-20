@@ -1,3 +1,10 @@
+# Wild Bifurcation without huge assumptions in three-gene dynamics using ODE
+# iv) Determine how many steady states it can have in different parameters
+# v) Explore the bifurcation of the statess
+# Author: Baihan Lin
+# Date:   July 2016
+
+# Modified from:
 # Bifurcation in three-gene dynamics using ODE
 # iv) Determine how many steady states it can have in different parameters
 # v) Explore the bifurcation of the statess
@@ -37,21 +44,14 @@ rm(list=ls())
 require(deSolve) # load the ode package
 
 n = 3
-trial = 1000
+trial = 10000
 
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0[1,] <- c(x1=0,x2=0,x3=0)      
-x0[2,] <- c(x1=10,x2=0,x3=0)  
-x0[3,] <- c(x1=0,x2=10,x3=0) 
-x0[4,] <- c(x1=0,x2=0,x3=10)     
-x0[5,] <- c(x1=10,x2=10,x3=0)     
-x0[6,] <- c(x1=10,x2=0,x3=10)     
-x0[7,] <- c(x1=0,x2=10,x3=10)     
-x0[8,] <- c(x1=10,x2=10,x3=10)  
 
-set.seed(1234)
-randset = 1000
-for (i in 9:trial){
+set.seed(5784)
+randset = 10000
+for (i in 2:trial){
   x1t <- runif(1, 0, randset)
   x2t <- runif(1, 0, randset)
   x3t <- runif(1, 0, randset)
@@ -69,19 +69,13 @@ A = mat.or.vec(n,1)   # gene synthesis rate
 K = mat.or.vec(n,n)   # gene-gene interaction (repress or activate) 
 M = mat.or.vec(n,1)   # gene degradation rate
 
-# Here we made a few assumptions:
-# 1) The synthesis of gene 1 and gene 2 are the same.
-# 2) In interactions, all activations are the same.
-# 3) In interactions, all repressions are the same.
-# 4) Degradation rate are the same for all 3 genes.
-
 # init values
 
 Ptrial = 10
-P0 = mat.or.vec(Ptrial,5)   # startvalues (genes)
-P0[1,] <- c(P1=2,P2=15,P3=1,P4=1,P5=100)      
+P0 = mat.or.vec(Ptrial,10)   # startvalues (genes)
+P0[1,] <- c(P1=2,P2=2,P3=15,P4=1,P5=1,P6=1,P7=1,P8=1,P9=1,P10=100)   
 
-set.seed(1457)
+set.seed(4578)
 Prandset = 1000
 for (i in 2:Ptrial){
   P1t <- runif(1, 0, Prandset)
@@ -89,15 +83,25 @@ for (i in 2:Ptrial){
   P3t <- runif(1, 0, Prandset)
   P4t <- runif(1, 0, Prandset)
   P5t <- runif(1, 0, Prandset)
-  P0[i,] <- c(P1t,P2t,P3t,P4t,P5t) 
+  P6t <- runif(1, 0, Prandset)
+  P7t <- runif(1, 0, Prandset)
+  P8t <- runif(1, 0, Prandset)
+  P9t <- runif(1, 0, Prandset)
+  P10t <- runif(1, 0, Prandset)
+  P0[i,] <- c(P1t,P2t,P3t,P4t,P5t,P6t,P7t,P8t,P9t,P10t) 
 }
 
 for (j in 1:Ptrial){
-  A[1] = A[2] = P0[j,1]
-  A[3] = P0[j,2]
-  M = M + P0[j,3]
-  K[2,1]=K[3,1]=K[3,2]=P0[j,4]
-  K[1,3]=P0[j,5]
+  A[1] = P0[j,1]
+  A[2] = P0[j,2]
+  A[3] = P0[j,3]
+  M[1] = P0[j,4]
+  M[2] = P0[j,5]
+  M[3] = P0[j,6]
+  K[2,1]=P0[j,7]
+  K[3,1]=P0[j,8]
+  K[3,2]=P0[j,9]
+  K[1,3]=P0[j,10]
   
   # ODE function
   func <- function(t,xx,p)
@@ -140,7 +144,7 @@ for (j in 1:Ptrial){
   maxY = max( c(max(x1r[1,]),max(x2r[1,]),max(x3r[1,])))
   #maxY = max( c(max(x1r),max(x2r),max(x3r)))
   
-  png(filename = paste("Bif_trial", trial,"_P", P0[j,1], "_", P0[j,2],
+  png(filename = paste("Wild_Bif_trial", trial,"_P", P0[j,1], "_", P0[j,2],
                        "_", P0[j,3], "_", P0[j,4], "_", P0[j,5], 
                        "_rand0_", randset, "_Prand0_", Prandset,".png", sep=""), 
       width = 480, height = 480, 
