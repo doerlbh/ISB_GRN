@@ -81,7 +81,7 @@ P0 = mat.or.vec(Ptrial,5)   # startvalues (genes)
 P0[1,] <- c(P1=2,P2=15,P3=1,P4=1,P5=100)      
 
 set.seed(1457)
-Prandset = 500
+Prandset = 1000
 for (i in 2:Ptrial){
   P1t <- runif(1, 0, Prandset)
   P2t <- runif(1, 0, Prandset)
