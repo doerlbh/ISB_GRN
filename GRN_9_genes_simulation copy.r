@@ -60,35 +60,21 @@ for (i in 9:trial){
   x0[i,] <- c(x1t,x2t,x3t) 
 }
 
-#x00 <- c(x1=0,x2=0,x3=0)     
-#x01 <- c(x1=10,x2=0,x3=0)     
-#x02 <- c(x1=0,x2=10,x3=0)     
-#x03 <- c(x1=0,x2=0,x3=10)     
-#x04 <- c(x1=10,x2=10,x3=0)     
-#x05 <- c(x1=10,x2=0,x3=10)     
-#x06 <- c(x1=0,x2=10,x3=10)     
-#x07 <- c(x1=10,x2=10,x3=10)     
-
-#x0_1 = x0
 ph = 20
 times <- seq(0,ph,0.1)  # time steps for output
 parms <- c()          # parameter (if necesarry)
 
 # Direct parameter declaration:
-n = 3
+n = 9
 X = mat.or.vec(n,1)   # gene number
 A = mat.or.vec(n,1)   # gene synthesis rate
 K = mat.or.vec(n,n)   # gene-gene interaction (repress or activate) 
 M = mat.or.vec(n,1)   # gene degradation rate
 
-# Here we made a few assumptions:
-# 1) The synthesis of gene 1 and gene 2 are the same.
-# 2) In interactions, all activations are the same.
-# 3) In interactions, all repressions are the same.
-
 # init values
-A[1] = A[2] = 2
-A[3] = 15
+A[1] = 
+A[2] = 
+A[3] = 
 M = M + 1
 K[2,1]=K[3,1]=K[3,2]=1
 K[1,3]=100
@@ -148,7 +134,6 @@ for (i in 1:trial){
 
 # plot gene time profiles                                                       
 graphics.off()
-windows(xpos=1,ypos=-50,width=n,height=4)
 
 #maxY = max( c(max(X01),max(X02),max(X03)))
 #maxY = max( c(max(X01),max(X02),max(X03),max(X11),max(X12),max(X13),
