@@ -53,7 +53,7 @@ require(deSolve) # load the ode package
 set.seed(5784)
 
 n = 3
-trial = 10000
+trial = 100
 
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0[1,] <- c(x1=0,x2=0,x3=0)      
@@ -152,7 +152,7 @@ for (j in 1:Ptrial){
   maxY = max( c(max(x1r[1,]),max(x2r[1,]),max(x3r[1,])))
   #maxY = max( c(max(x1r),max(x2r),max(x3r)))
   
-  png(filename = paste("Wild_Bif_trial", trial,"_P", P0[j,1], "_", P0[j,2],
+  png(filename = paste("./data/T", trial,"_P", P0[j,1], "_", P0[j,2],
                        "_", P0[j,3], "_", P0[j,4], "_", P0[j,5], "_",
                        P0[j,6], "_", P0[j,7], "_", P0[j,8], "_", P0[j,9], "_", P0[j,10],
                        "_rand0_", randset, "_Prand0_", Prandset,".png", sep=""), 
