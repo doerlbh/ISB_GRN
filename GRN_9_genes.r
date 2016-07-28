@@ -57,16 +57,9 @@ n = 3        # gene
 trial = 100  # trial
 trshd = 0.01 # threshold for different states
 
+randset = 1000
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
-x0[1,] <- c(x1=0,x2=0,x3=0)      
-
-randset = 10000
-for (i in 2:trial){
-  x1t <- runif(1, 0, randset)
-  x2t <- runif(1, 0, randset)
-  x3t <- runif(1, 0, randset)
-  x0[i,] <- c(x1t,x2t,x3t) 
-}
+x0 = matrix(round(runif(trial*n),randset), trial, n) 
 
 ph = 20
 times <- seq(0,ph,0.1)  # time steps for output
