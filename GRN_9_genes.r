@@ -105,14 +105,15 @@ for (p in 1:num) {
   }
   
   # solve ODE
-  
+  xr = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
   for (i in 1:trial){
-    xr = mat.or.vec(n,length(times))
+    
     x0r <- x0[i,]
     res <- lsoda(x0r,times, func, parms)   # solve it
     res <- as.data.frame(res)             # make a data frame
+    
     for (node in 1:n) {
-    xr[node,] <- res[,node+1]  
+      xr[i,node,] <- res[,node+1]  
     }
   }
   
@@ -120,30 +121,28 @@ for (p in 1:num) {
   #graphics.off()
   #windows(xpos=1,ypos=-50,width=n,height=4)
   
-  maxY = 1.5*max( c(max(x1r[,length(x1r)/trial]),max(x2r[,length(x2r)/trial]),
-                max(x3r[,length(x1r)/trial])))
+  maxY = max(xr[,,round(0.9*length(xr)/(n*trial)):length(xr)/(n*trial)])
   #maxY = max( c(max(x1r),max(x2r),max(x3r)))
   
   png(filename = paste("./data/N", n, "-T", trial,"-P",p, ".png", sep=""), 
       width = 480, height = 480, 
       units = "px", pointsize = 12, bg = "white")
   
-  plot(times,x1r[1,],ylim=c(0, maxY), main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
-       type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,1,0))
+  plot(times,xr[1,1,],ylim=c(0, maxY), main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
+       type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,0,1/n))
   legend("topleft", legend=c("x1", "x2","x3"),col=c("green","red", "blue"), lty=1:1)
   states = 1;
+  add = (abs(xr[1,1,length(xr)/(n*trial)] - x1r[1,1,length(x1r)/(n*trial)])<trshd)
   for (i in 1:trial){
-    lines(times,x1r[i,],lwd=2,col=rgb(0,1,0))
-    lines(times,x2r[i,],lwd=2,col=rgb(1,0,0))
-    lines(times,x3r[i,],lwd=2,col=rgb(0,0,1))
-    add = (abs(x1r[i,length(x1r)/trial] - x1r[1,length(x1r)/trial])<trshd)
-    add = add*(abs(x2r[i,length(x1r)/trial] - x2r[1,length(x1r)/trial])<trshd)
-    add = add*(abs(x3r[i,length(x1r)/trial] - x3r[1,length(x1r)/trial])<trshd)
+    for (node in 1:n) {
+      lines(times,x1r[i,],lwd=2,col=rgb(0,0,node/n))
+      add = add*(abs(xr[i,node,length(xr)/(n*trial)] - x1r[1,node,length(x1r)/(n*trial)])<trshd)
+    }
     states = states + !add
   }
   mtext(paste(n,"-gene ",states, "-state network #", p, sep=""))
   dev.off()
-  }
+}
 }
 
 
