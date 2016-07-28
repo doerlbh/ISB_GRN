@@ -47,9 +47,9 @@
 rm(list=ls())
 require(deSolve) # load the ode package
 
-set.seed(5784)
+set.seed(34)
 
-num = 1      # network number 
+num = 3      # network number 
 n = 3        # gene
 trial = 100  # trial
 trshd = 0.01 # threshold for different states
@@ -65,40 +65,39 @@ x0 = randset*matrix(round(runif(trial*n),randset), trial, n)
 ph = 20
 times <- seq(0,ph,0.1)  # time steps for output
 parms <- c()          # parameter (if necesarry)
+temp1 = mat.or.vec(n,1)
+temp2 = mat.or.vec(n,1)
 
 # Direct parameter declaration:
-X = mat.or.vec(n,1)   # gene number
+x = mat.or.vec(n,1)   # gene number
 A = mat.or.vec(n,n)   # gene sythesis rate
-K = mat.or.vec(n,n)   # gene-gene interaction (repress or activate) 
 M = mat.or.vec(n,1)   # gene degradation rate
-
-# init parameters
-P = mat.or.vec(n,n)   # parameters
+P = mat.or.vec(n,n)   # parameters, i.e. gene-gene interaction (repress or activate) 
 N = mat.or.vec(n,n)   # interaction types
 
 for (p in 1:num) {
   P = Prandset*matrix(round(runif(n*n),Prandset), n, n) 
-  M = Prandset*matrix(round(runif(n*1), Prandset),n,1)
+  M = 10*matrix(round(runif(n*1), Prandset),n,1)
   A = diag(P)
   
   for (node in 1:n) {
     N[node,] = sample(c(1, 0,-1),n,TRUE)
     N[node,node] = 0
+    #print(N)
   }
   
   
   # ODE function
   func <- function(t,xx,p)
   {
-    x = mat.or.vec(n,1)
     dx = mat.or.vec(n,1)
+    #print(xx)
     x = xx  
-    
     for (node in 1:n) {
       temp1 = (N>0)*P[node,]*x
-      temp1[temp1 = 0] = 1
+      temp1[temp1 == 0] = 1
       temp2 = (N<0)*P[node,]*x
-      temp2[temp2 = 0] = 1
+      temp2[temp2 == 0] = 1
       dx[node] = A[node]*prod(temp1)/(prod(1+temp1)*prod(temp2)) - M[node]*x[node]
     }
     
@@ -119,11 +118,10 @@ for (p in 1:num) {
     names(x0r) = c("x1", "x2", "x3")
     res <- lsoda(x0r,times, func, parms)   # solve it
     res <- as.data.frame(res)             # make a data frame
-    x1r[i,] <- res$x[1]                        
-    x2r[i,] <- res$x[2]                         
-    x3r[i,] <- res$x[3]                   
+    x1r[i,] <- res$x1                        
+    x2r[i,] <- res$x2                         
+    x3r[i,] <- res$x3                   
   }
-  
   
   # plot gene time profiles                                                       
   #graphics.off()
@@ -136,8 +134,8 @@ for (p in 1:num) {
       width = 480, height = 480, 
       units = "px", pointsize = 12, bg = "white")
   
-  plot(times,x1r[1,],main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
-       type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,1,0), ylim=c(0, maxY) )
+  plot(times,x1r[1,],ylim=c(0, maxY), main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
+       type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,1,0))
   legend("topleft", legend=c("x1", "x2","x3"),col=c("green","red", "blue"), lty=1:1)
   states = 1;
   for (i in 1:trial){
