@@ -52,17 +52,17 @@ set.seed(34)
 num = 3      # network number 
 n = 3        # gene
 trial = 100  # trial
-trshd = 0.01 # threshold for different states
+trshd = 0.001 # threshold for different states
 
 # Starting values
 randset = 1000  # range of 
-Prandset = 1000 # range of parameters
+Prandset = 100 # range of parameters
 
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0 = randset*matrix(round(runif(trial*n),randset), trial, n) 
 
 # Time series
-ph = 20
+ph = 50
 times <- seq(0,ph,0.1)  # time steps for output
 parms <- c()          # parameter (if necesarry)
 temp1 = mat.or.vec(n,1)
@@ -106,28 +106,22 @@ for (p in 1:num) {
   
   # solve ODE
   
-  x1r = mat.or.vec(trial,length(times))
-  x2r = mat.or.vec(trial,length(times))
-  x3r = mat.or.vec(trial,length(times))
-  
-  #res0 <- lsoda(x00,times, func, parms)   # solve it
-  #res0 <- as.data.frame(res0)             # make a data frame
-  
   for (i in 1:trial){
+    xr = mat.or.vec(n,length(times))
     x0r <- x0[i,]
-    names(x0r) = c("x1", "x2", "x3")
     res <- lsoda(x0r,times, func, parms)   # solve it
     res <- as.data.frame(res)             # make a data frame
-    x1r[i,] <- res$x1                        
-    x2r[i,] <- res$x2                         
-    x3r[i,] <- res$x3                   
+    for (node in 1:n) {
+    xr[node,] <- res[,node+1]  
+    }
   }
   
   # plot gene time profiles                                                       
   #graphics.off()
   #windows(xpos=1,ypos=-50,width=n,height=4)
   
-  maxY = max( c(max(x1r[1,]),max(x2r[1,]),max(x3r[1,])))
+  maxY = 1.5*max( c(max(x1r[,length(x1r)/trial]),max(x2r[,length(x2r)/trial]),
+                max(x3r[,length(x1r)/trial])))
   #maxY = max( c(max(x1r),max(x2r),max(x3r)))
   
   png(filename = paste("./data/N", n, "-T", trial,"-P",p, ".png", sep=""), 
@@ -149,6 +143,7 @@ for (p in 1:num) {
   }
   mtext(paste(n,"-gene ",states, "-state network #", p, sep=""))
   dev.off()
+  }
 }
 
 
