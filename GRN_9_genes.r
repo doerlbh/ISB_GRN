@@ -62,7 +62,7 @@ x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0 = randset*matrix(round(runif(trial*n),randset), trial, n) 
 
 # Time series
-ph = 50
+ph = 40
 times <- seq(0,ph,0.2)  # time steps for output
 parms <- c()          # parameter (if necesarry)
 temp1 = mat.or.vec(n,1)

@@ -55,14 +55,13 @@ require(deSolve) # load the ode package
 set.seed(314)
 
 num = 1      # network number 
-n = 9        # gene
+n = 7        # gene
 trshd = 0.001 # threshold for different states
 
 # perturbation
 chnum = 1     # num of genes perturbed 
 chg = N[node,] = sample(1:n,chnum,TRUE)  # which genes perturbed
-trial = 100  # trial
-pert = 20 # trial
+trial = 10  # trial
 
 # Starting values
 randset = 1000  # range of 
@@ -73,6 +72,9 @@ x0 = randset*matrix(round(runif(trial*n),randset), trial, n)
 
 # Time series
 ph = 100
+pert = 10 # perturbation time
+pertind = length(seq(0,ph,0.1)) # perturbation ends
+
 times <- seq(0,ph,0.1)  # time steps for output
 parms <- c()          # parameter (if necesarry)
 temp1 = mat.or.vec(n,1)
