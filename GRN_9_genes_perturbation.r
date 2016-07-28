@@ -1,3 +1,10 @@
+# Perturbating n-gene networks
+# i) Create a nine-gene network
+# ii) Determine how many steady states it can have in different parameters
+# iii) only keep those who have more than one steady states
+# Author: Baihan Lin
+# Date:   July 2016
+
 # Creating n-gene networks
 # i) Create a nine-gene network
 # ii) Determine how many steady states it can have in different parameters
@@ -62,7 +69,7 @@ x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0 = randset*matrix(round(runif(trial*n),randset), trial, n) 
 
 # Time series
-ph = 40
+ph = 100
 times <- seq(0,ph,0.1)  # time steps for output
 parms <- c()          # parameter (if necesarry)
 temp1 = mat.or.vec(n,1)
@@ -77,7 +84,7 @@ N = mat.or.vec(n,n)   # interaction types
 
 for (p in 1:num) {
   P = Prandset*matrix(round(runif(n*n),Prandset), n, n) 
-  M = matrix(round(runif(n*1), Prandset),n,1)
+  M = 2*matrix(round(runif(n*1), Prandset),n,1)
   A = diag(P)
   
   for (node in 1:n) {
