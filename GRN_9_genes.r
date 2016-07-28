@@ -49,7 +49,7 @@ require(deSolve) # load the ode package
 
 set.seed(34)
 
-num = 3      # network number 
+num = 4      # network number 
 n = 9        # gene
 trial = 100  # trial
 trshd = 0.001 # threshold for different states
@@ -62,8 +62,8 @@ x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0 = randset*matrix(round(runif(trial*n),randset), trial, n) 
 
 # Time series
-ph = 40
-times <- seq(0,ph,0.1)  # time steps for output
+ph = 50
+times <- seq(0,ph,0.2)  # time steps for output
 parms <- c()          # parameter (if necesarry)
 temp1 = mat.or.vec(n,1)
 temp2 = mat.or.vec(n,1)
@@ -78,7 +78,7 @@ N = mat.or.vec(n,n)   # interaction types
 for (p in 1:num) {
   P = Prandset*matrix(round(runif(n*n),Prandset), n, n) 
   M = matrix(round(runif(n*1), Prandset),n,1)
-  A = diag(P)
+  A = 100*diag(P)
   
   for (node in 1:n) {
     N[node,] = sample(c(1, 0,-1),n,TRUE)

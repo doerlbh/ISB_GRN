@@ -1,7 +1,5 @@
 # Perturbating n-gene networks
-# i) Create a nine-gene network
-# ii) Determine how many steady states it can have in different parameters
-# iii) only keep those who have more than one steady states
+# 1) perturb one gene at a time
 # Author: Baihan Lin
 # Date:   July 2016
 
@@ -54,12 +52,17 @@
 rm(list=ls())
 require(deSolve) # load the ode package
 
-set.seed(34)
+set.seed(314)
 
-num = 3      # network number 
+num = 1      # network number 
 n = 9        # gene
-trial = 100  # trial
 trshd = 0.001 # threshold for different states
+
+# perturbation
+chnum = 1     # num of genes perturbed 
+chg = N[node,] = sample(1:n,chnum,TRUE)  # which genes perturbed
+trial = 100  # trial
+pert = 20 # trial
 
 # Starting values
 randset = 1000  # range of 
