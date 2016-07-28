@@ -76,38 +76,19 @@ K = mat.or.vec(n,n)   # gene-gene interaction (repress or activate)
 M = mat.or.vec(n,1)   # gene degradation rate
 
 # init parameters
-P0 = mat.or.vec(n,n)  # startvalues (genes)samp
+P0 = mat.or.vec(n,n)  # startvalues (genes)
+N = mat.or.vec(n,n)   # interaction types
 
 for (p in 1:num) {
   P0 = Prandset*matrix(round(runif(n*n),Prandset), n, n) 
   A = diag(P0);
   
-  for (i in 2:Ptrial){
-    P1t <- runif(1, 0, Prandset)
-    P2t <- runif(1, 0, Prandset)
-    P3t <- runif(1, 0, Prandset)
-    P4t <- runif(1, 0, Prandset)
-    P5t <- runif(1, 0, Prandset)
-    P6t <- runif(1, 0, Prandset)
-    P7t <- runif(1, 0, Prandset)
-    P8t <- runif(1, 0, Prandset)
-    P9t <- runif(1, 0, Prandset)
-    P10t <- runif(1, 0, Prandset)
-    P0[i,] <- c(P1t,P2t,P3t,P4t,P5t,P6t,P7t,P8t,P9t,P10t) 
+  for (node in 1:n) {
+    N[node,] = sample(c(1, 0,-1),n,TRUE)
+    N[node,node] = 0
   }
+
   
-  for (j in 1:Ptrial){
-    A[1] = P0[j,1]
-    A[2] = P0[j,2]
-    A[3] = P0[j,3]
-    M[1] = P0[j,4]
-    M[2] = P0[j,5]
-    M[3] = P0[j,6]
-    K[2,1]=P0[j,7]
-    K[3,1]=P0[j,8]
-    K[3,2]=P0[j,9]
-    K[1,3]=P0[j,10]
-    
     # ODE function
     func <- function(t,xx,p)
     {
