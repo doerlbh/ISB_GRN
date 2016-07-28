@@ -121,7 +121,7 @@ for (p in 1:num) {
   #graphics.off()
   #windows(xpos=1,ypos=-50,width=n,height=4)
   
-  maxY = max(xr[,,round(0.9*length(xr)/(n*trial)):length(xr)/(n*trial)])
+  maxY = max(xr[,,round(0.95*length(xr)/(n*trial)):length(xr)/(n*trial)])
   #maxY = max( c(max(x1r),max(x2r),max(x3r)))
   
   png(filename = paste("./data/N", n, "-T", trial,"-P",p, ".png", sep=""), 
@@ -130,19 +130,19 @@ for (p in 1:num) {
   
   plot(times,xr[1,1,],ylim=c(0, maxY), main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
        type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,0,1/n))
-  legend("topleft", legend=c("x1", "x2","x3"),col=c("green","red", "blue"), lty=1:1)
+  #legend("topleft", lty=1:1)
   states = 1;
-  add = (abs(xr[1,1,length(xr)/(n*trial)] - x1r[1,1,length(x1r)/(n*trial)])<trshd)
+  add = (abs(xr[1,1,length(xr)/(n*trial)] - xr[1,1,length(xr)/(n*trial)])<trshd)
   for (i in 1:trial){
     for (node in 1:n) {
-      lines(times,x1r[i,],lwd=2,col=rgb(0,0,node/n))
-      add = add*(abs(xr[i,node,length(xr)/(n*trial)] - x1r[1,node,length(x1r)/(n*trial)])<trshd)
+      lines(times,xr[i,node,],lwd=2,col=rgb(0,0,node/n))
+      add = add*(abs(xr[i,node,length(xr)/(n*trial)] - xr[1,node,length(xr)/(n*trial)])<trshd)
     }
     states = states + !add
   }
   mtext(paste(n,"-gene ",states, "-state network #", p, sep=""))
   dev.off()
 }
-}
+
 
 
