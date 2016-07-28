@@ -54,7 +54,7 @@ set.seed(5784)
 
 n = 3
 trial = 100
-trshd = 0.001
+trshd = 0.01
 
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0[1,] <- c(x1=0,x2=0,x3=0)      
@@ -115,15 +115,15 @@ for (j in 1:Ptrial){
   # ODE function
   func <- function(t,xx,p)
   {
-  x1 <- xx[1]   
-  x2 <- xx[2]   
-  x3 <- xx[3]   
-  
-  dx1 <-  A[1]/(1 + K[1,3]*x3) - M[1]*x1
-  dx2 <-  A[2]*K[2,1]*x1/(1 + K[2,1]*x1) - M[2]*x2
-  dx3 <-  A[3]*K[3,1]*x1*K[3,2]*x2 /((1 + K[3,1]*x1)*(1 + K[3,2]*x2)) - M[3]*x3
-  
-  
+    x1 <- xx[1]   
+    x2 <- xx[2]   
+    x3 <- xx[3]   
+    
+    dx1 <-  A[1]/(1 + K[1,3]*x3) - M[1]*x1
+    dx2 <-  A[2]*K[2,1]*x1/(1 + K[2,1]*x1) - M[2]*x2
+    dx3 <-  A[3]*K[3,1]*x1*K[3,2]*x2 /((1 + K[3,1]*x1)*(1 + K[3,2]*x2)) - M[3]*x3
+    
+    
     list(c(dx1,dx2,dx3))    # give the change rates to the solver
   }
   
@@ -167,13 +167,14 @@ for (j in 1:Ptrial){
     lines(times,x1r[i,],lwd=2,col=rgb(0,1,0))
     lines(times,x2r[i,],lwd=2,col=rgb(1,0,0))
     lines(times,x3r[i,],lwd=2,col=rgb(0,0,1))
-    x1r[1,length(x1r)/trial]
-    x2r[1,length(x1r)/trial]
-    x3r[1,length(x1r)/trial]
+    add = (abs(x1r[i,length(x1r)/trial] - x1r[1,length(x1r)/trial])<trshd)
+    add = add*(abs(x2r[i,length(x1r)/trial] - x2r[1,length(x1r)/trial])<trshd)
+    add = add*(abs(x3r[i,length(x1r)/trial] - x3r[1,length(x1r)/trial])<trshd)
+    states = states + !add
   }
   
   
   dev.off()
-
+  
 }
 
