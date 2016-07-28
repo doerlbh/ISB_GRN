@@ -159,8 +159,8 @@ for (j in 1:Ptrial){
       units = "px", pointsize = 12, bg = "white")
   
   plot(times,x1r[1,],main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
-       type="l",lwd=2,col=rgb(0,1,0), ylim=c(0, maxY) )
-  legend("topleft", legend=c("x1", "x2","x3"),col=c("green","red", "blue"), lty=1:3)
+       type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,1,0), ylim=c(0, maxY) )
+  legend("topleft", legend=c("x1", "x2","x3"),col=c("green","red", "blue"), lty=1:1)
   states = 1;
   for (i in 1:trial){
     lines(times,x1r[i,],lwd=2,col=rgb(0,1,0))
@@ -171,7 +171,7 @@ for (j in 1:Ptrial){
     add = add*(abs(x3r[i,length(x1r)/trial] - x3r[1,length(x1r)/trial])<trshd)
     states = states + !add
   }
-  states
+  mtext(paste(n,"-gene ",states, "-state network #", sep=""))
   dev.off()
 }
 
