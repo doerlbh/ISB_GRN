@@ -52,9 +52,10 @@ require(deSolve) # load the ode package
 
 set.seed(5784)
 
-n = 3
-trial = 100
-trshd = 0.01
+num = 1      # network number 
+n = 3        # gene
+trial = 100  # trial
+trshd = 0.01 # threshold for different states
 
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0[1,] <- c(x1=0,x2=0,x3=0)      
