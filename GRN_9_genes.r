@@ -54,6 +54,7 @@ set.seed(5784)
 
 n = 3
 trial = 100
+trshd = 0.001
 
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0[1,] <- c(x1=0,x2=0,x3=0)      
@@ -161,11 +162,16 @@ for (j in 1:Ptrial){
       units = "px", pointsize = 12, bg = "white")
   
   plot(times,x1r[1,],type="l",lwd=2,col=rgb(0,1,0), ylim=c(0, maxY) )
+  states = 1;
   for (i in 1:trial){
     lines(times,x1r[i,],lwd=2,col=rgb(0,1,0))
     lines(times,x2r[i,],lwd=2,col=rgb(1,0,0))
     lines(times,x3r[i,],lwd=2,col=rgb(0,0,1))
+    x1r[1,length(x1r)/trial]
+    x2r[1,length(x1r)/trial]
+    x3r[1,length(x1r)/trial]
   }
+  
   
   dev.off()
 
