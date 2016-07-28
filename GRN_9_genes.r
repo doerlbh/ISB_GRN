@@ -95,9 +95,11 @@ for (p in 1:num) {
     x = xx  
     
     for (node in 1:n) {
-      dx[node] = A[node] - M
-      dx2 <-  A[2]*K[2,1]*x1/(1 + K[2,1]*x1) - M[2]*x2
-      dx3 <-  A[3]*K[3,1]*x1*K[3,2]*x2 /((1 + K[3,1]*x1)*(1 + K[3,2]*x2)) - M[3]*x3
+      temp1 = (N>0)*P[node,]*x
+      temp1[temp1 = 0] = 1
+      temp2 = (N<0)*P[node,]*x
+      temp2[temp2 = 0] = 1
+      dx[node] = A[node]*prod(temp1)/(prod(1+temp1)*prod(temp2)) - M[node]*x[node]
     }
     
     list(dx)    # give the change rates to the solver
@@ -117,9 +119,9 @@ for (p in 1:num) {
     names(x0r) = c("x1", "x2", "x3")
     res <- lsoda(x0r,times, func, parms)   # solve it
     res <- as.data.frame(res)             # make a data frame
-    x1r[i,] <- res$x1                        
-    x2r[i,] <- res$x2                         
-    x3r[i,] <- res$x3                   
+    x1r[i,] <- res$x[1]                        
+    x2r[i,] <- res$x[2]                         
+    x3r[i,] <- res$x[3]                   
   }
   
   
