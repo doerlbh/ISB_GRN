@@ -154,14 +154,13 @@ for (j in 1:Ptrial){
   maxY = max( c(max(x1r[1,]),max(x2r[1,]),max(x3r[1,])))
   #maxY = max( c(max(x1r),max(x2r),max(x3r)))
   
-  png(filename = paste("./data/T", trial,"_P", P0[j,1], "_", P0[j,2],
-                       "_", P0[j,3], "_", P0[j,4], "_", P0[j,5], "_",
-                       P0[j,6], "_", P0[j,7], "_", P0[j,8], "_", P0[j,9], "_", P0[j,10],
-                       "_rand0_", randset, "_Prand0_", Prandset,".png", sep=""), 
+  png(filename = paste("./data/N", n, "-T", trial, ".png", sep=""), 
       width = 480, height = 480, 
       units = "px", pointsize = 12, bg = "white")
   
-  plot(times,x1r[1,],type="l",lwd=2,col=rgb(0,1,0), ylim=c(0, maxY) )
+  plot(times,x1r[1,],main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
+       type="l",lwd=2,col=rgb(0,1,0), ylim=c(0, maxY) )
+  legend("topleft", legend=c("x1", "x2","x3"),col=c("green","red", "blue"), lty=1:3)
   states = 1;
   for (i in 1:trial){
     lines(times,x1r[i,],lwd=2,col=rgb(0,1,0))
@@ -172,9 +171,7 @@ for (j in 1:Ptrial){
     add = add*(abs(x3r[i,length(x1r)/trial] - x3r[1,length(x1r)/trial])<trshd)
     states = states + !add
   }
-  
-  
+  states
   dev.off()
-  
 }
 
