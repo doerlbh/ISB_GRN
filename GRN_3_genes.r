@@ -42,16 +42,18 @@ K[1,3]=100
 # ODE function
 func <- function(t,xx,p)
 {
-x1 <- xx[1]   # actual prey value
-x2 <- xx[2]   # actual pred value
-x3 <- xx[3]   # actual prey value
+  x = mat.or.vec(n,1)
+  dx = mat.or.vec(n,1)
+  
+x[1] <- xx[1]   # actual prey value
+x[2] <- xx[2]   # actual pred value
+x[3] <- xx[3]   # actual prey value
 
+dx[1] <-  A[1]/(1 + K[1,3]*x[3]) - M[1]*x[1]
+dx[2] <-  A[2]*K[2,1]*x[1]/(1 + K[2,1]*x[1]) - M[2]*x[2]
+dx[3] <-  A[3]*K[3,1]*x[1]*K[3,2]*x[2] /((1 + K[3,1]*x[1])*(1 + K[3,2]*x[2])) - M[3]*x[3]
 
-dx1 <-  A[1]/(1 + K[1,3]*x3) - M[1]*x1
-dx2 <-  A[2]*K[2,1]*x1/(1 + K[2,1]*x1) - M[2]*x2
-dx3 <-  A[3]*K[3,1]*x1*K[3,2]*x2 /((1 + K[3,1]*x1)*(1 + K[3,2]*x2)) - M[3]*x3
-
-  list(c(dx1,dx2,dx3))    # give the change rates to the solver
+  list(c(dx[1],dx[2],dx[3]))    # give the change rates to the solver
 }
 
 # solve ODE

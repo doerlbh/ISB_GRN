@@ -42,10 +42,7 @@
 # i) Calculate trajectories
 # ii) Plot species time profiles
 # Author: Joseph X. Zhou
-# Date:   12/11/2014
-# Modify History:
-# 1) Date: 06/04/2014
-
+# Date:   Dec 2014
 
 rm(list=ls())
 require(deSolve) # load the ode package
@@ -76,12 +73,13 @@ K = mat.or.vec(n,n)   # gene-gene interaction (repress or activate)
 M = mat.or.vec(n,1)   # gene degradation rate
 
 # init parameters
-P0 = mat.or.vec(n,n)  # startvalues (genes)
+P = mat.or.vec(n,n)   # parameters
 N = mat.or.vec(n,n)   # interaction types
 
 for (p in 1:num) {
-  P0 = Prandset*matrix(round(runif(n*n),Prandset), n, n) 
-  A = diag(P0);
+  P = Prandset*matrix(round(runif(n*n),Prandset), n, n) 
+  M = Prandset*matrix(round(runif(n*1), Prandset),n,1)
+  A = diag(P)
   
   for (node in 1:n) {
     N[node,] = sample(c(1, 0,-1),n,TRUE)
@@ -92,16 +90,17 @@ for (p in 1:num) {
   # ODE function
   func <- function(t,xx,p)
   {
-    x1 <- xx[1]   
-    x2 <- xx[2]   
-    x3 <- xx[3]   
+    x = mat.or.vec(n,1)
+    dx = mat.or.vec(n,1)
+    x = xx  
     
-    dx1 <-  A[1]/(1 + K[1,3]*x3) - M[1]*x1
-    dx2 <-  A[2]*K[2,1]*x1/(1 + K[2,1]*x1) - M[2]*x2
-    dx3 <-  A[3]*K[3,1]*x1*K[3,2]*x2 /((1 + K[3,1]*x1)*(1 + K[3,2]*x2)) - M[3]*x3
+    for (node in 1:n) {
+      dx[node] = A[node] - M
+      dx2 <-  A[2]*K[2,1]*x1/(1 + K[2,1]*x1) - M[2]*x2
+      dx3 <-  A[3]*K[3,1]*x1*K[3,2]*x2 /((1 + K[3,1]*x1)*(1 + K[3,2]*x2)) - M[3]*x3
+    }
     
-    
-    list(c(dx1,dx2,dx3))    # give the change rates to the solver
+    list(dx)    # give the change rates to the solver
   }
   
   # solve ODE
@@ -151,5 +150,5 @@ for (p in 1:num) {
   mtext(paste(n,"-gene ",states, "-state network #", p, sep=""))
   dev.off()
 }
-}
+
 
