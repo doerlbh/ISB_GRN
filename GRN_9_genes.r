@@ -87,69 +87,69 @@ for (p in 1:num) {
     N[node,] = sample(c(1, 0,-1),n,TRUE)
     N[node,node] = 0
   }
-
   
-    # ODE function
-    func <- function(t,xx,p)
-    {
-      x1 <- xx[1]   
-      x2 <- xx[2]   
-      x3 <- xx[3]   
-      
-      dx1 <-  A[1]/(1 + K[1,3]*x3) - M[1]*x1
-      dx2 <-  A[2]*K[2,1]*x1/(1 + K[2,1]*x1) - M[2]*x2
-      dx3 <-  A[3]*K[3,1]*x1*K[3,2]*x2 /((1 + K[3,1]*x1)*(1 + K[3,2]*x2)) - M[3]*x3
-      
-      
-      list(c(dx1,dx2,dx3))    # give the change rates to the solver
-    }
+  
+  # ODE function
+  func <- function(t,xx,p)
+  {
+    x1 <- xx[1]   
+    x2 <- xx[2]   
+    x3 <- xx[3]   
     
-    # solve ODE
-    
-    x1r = mat.or.vec(trial,length(times))
-    x2r = mat.or.vec(trial,length(times))
-    x3r = mat.or.vec(trial,length(times))
-    
-    #res0 <- lsoda(x00,times, func, parms)   # solve it
-    #res0 <- as.data.frame(res0)             # make a data frame
-    
-    for (i in 1:trial){
-      x0r <- x0[i,]
-      names(x0r) = c("x1", "x2", "x3")
-      res <- lsoda(x0r,times, func, parms)   # solve it
-      res <- as.data.frame(res)             # make a data frame
-      x1r[i,] <- res$x1                        
-      x2r[i,] <- res$x2                         
-      x3r[i,] <- res$x3                   
-    }
+    dx1 <-  A[1]/(1 + K[1,3]*x3) - M[1]*x1
+    dx2 <-  A[2]*K[2,1]*x1/(1 + K[2,1]*x1) - M[2]*x2
+    dx3 <-  A[3]*K[3,1]*x1*K[3,2]*x2 /((1 + K[3,1]*x1)*(1 + K[3,2]*x2)) - M[3]*x3
     
     
-    # plot gene time profiles                                                       
-    #graphics.off()
-    #windows(xpos=1,ypos=-50,width=n,height=4)
-    
-    maxY = max( c(max(x1r[1,]),max(x2r[1,]),max(x3r[1,])))
-    #maxY = max( c(max(x1r),max(x2r),max(x3r)))
-    
-    png(filename = paste("./data/N", n, "-T", trial,"-P",p, ".png", sep=""), 
-        width = 480, height = 480, 
-        units = "px", pointsize = 12, bg = "white")
-    
-    plot(times,x1r[1,],main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
-         type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,1,0), ylim=c(0, maxY) )
-    legend("topleft", legend=c("x1", "x2","x3"),col=c("green","red", "blue"), lty=1:1)
-    states = 1;
-    for (i in 1:trial){
-      lines(times,x1r[i,],lwd=2,col=rgb(0,1,0))
-      lines(times,x2r[i,],lwd=2,col=rgb(1,0,0))
-      lines(times,x3r[i,],lwd=2,col=rgb(0,0,1))
-      add = (abs(x1r[i,length(x1r)/trial] - x1r[1,length(x1r)/trial])<trshd)
-      add = add*(abs(x2r[i,length(x1r)/trial] - x2r[1,length(x1r)/trial])<trshd)
-      add = add*(abs(x3r[i,length(x1r)/trial] - x3r[1,length(x1r)/trial])<trshd)
-      states = states + !add
-    }
-    mtext(paste(n,"-gene ",states, "-state network #", p, sep=""))
-    dev.off()
+    list(c(dx1,dx2,dx3))    # give the change rates to the solver
   }
+  
+  # solve ODE
+  
+  x1r = mat.or.vec(trial,length(times))
+  x2r = mat.or.vec(trial,length(times))
+  x3r = mat.or.vec(trial,length(times))
+  
+  #res0 <- lsoda(x00,times, func, parms)   # solve it
+  #res0 <- as.data.frame(res0)             # make a data frame
+  
+  for (i in 1:trial){
+    x0r <- x0[i,]
+    names(x0r) = c("x1", "x2", "x3")
+    res <- lsoda(x0r,times, func, parms)   # solve it
+    res <- as.data.frame(res)             # make a data frame
+    x1r[i,] <- res$x1                        
+    x2r[i,] <- res$x2                         
+    x3r[i,] <- res$x3                   
+  }
+  
+  
+  # plot gene time profiles                                                       
+  #graphics.off()
+  #windows(xpos=1,ypos=-50,width=n,height=4)
+  
+  maxY = max( c(max(x1r[1,]),max(x2r[1,]),max(x3r[1,])))
+  #maxY = max( c(max(x1r),max(x2r),max(x3r)))
+  
+  png(filename = paste("./data/N", n, "-T", trial,"-P",p, ".png", sep=""), 
+      width = 480, height = 480, 
+      units = "px", pointsize = 12, bg = "white")
+  
+  plot(times,x1r[1,],main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
+       type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,1,0), ylim=c(0, maxY) )
+  legend("topleft", legend=c("x1", "x2","x3"),col=c("green","red", "blue"), lty=1:1)
+  states = 1;
+  for (i in 1:trial){
+    lines(times,x1r[i,],lwd=2,col=rgb(0,1,0))
+    lines(times,x2r[i,],lwd=2,col=rgb(1,0,0))
+    lines(times,x3r[i,],lwd=2,col=rgb(0,0,1))
+    add = (abs(x1r[i,length(x1r)/trial] - x1r[1,length(x1r)/trial])<trshd)
+    add = add*(abs(x2r[i,length(x1r)/trial] - x2r[1,length(x1r)/trial])<trshd)
+    add = add*(abs(x3r[i,length(x1r)/trial] - x3r[1,length(x1r)/trial])<trshd)
+    states = states + !add
+  }
+  mtext(paste(n,"-gene ",states, "-state network #", p, sep=""))
+  dev.off()
+}
 }
 
