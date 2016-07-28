@@ -1,4 +1,4 @@
-# Creating nine-gene networks
+# Creating n-gene networks
 # i) Create a nine-gene network
 # ii) Determine how many steady states it can have in different parameters
 # iii) only keep those who have more than one steady states
@@ -57,16 +57,17 @@ n = 3        # gene
 trial = 100  # trial
 trshd = 0.01 # threshold for different states
 
+# Starting values
 randset = 1000
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0 = matrix(round(runif(trial*n),randset), trial, n) 
 
+# Time series
 ph = 20
 times <- seq(0,ph,0.1)  # time steps for output
 parms <- c()          # parameter (if necesarry)
 
 # Direct parameter declaration:
-n = 3
 X = mat.or.vec(n,1)   # gene number
 A = mat.or.vec(n,1)   # gene synthesis rate
 K = mat.or.vec(n,n)   # gene-gene interaction (repress or activate) 
