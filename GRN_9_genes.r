@@ -79,7 +79,7 @@ M = mat.or.vec(n,1)   # gene degradation rate
 
 # init values
 
-Ptrial = 10
+Ptrial = 1
 P0 = mat.or.vec(Ptrial,10)   # startvalues (genes)
 P0[1,] <- c(P1=2,P2=2,P3=15,P4=1,P5=1,P6=1,P7=1,P8=1,P9=1,P10=100)   
 
@@ -121,6 +121,7 @@ for (j in 1:Ptrial){
   dx1 <-  A[1]/(1 + K[1,3]*x3) - M[1]*x1
   dx2 <-  A[2]*K[2,1]*x1/(1 + K[2,1]*x1) - M[2]*x2
   dx3 <-  A[3]*K[3,1]*x1*K[3,2]*x2 /((1 + K[3,1]*x1)*(1 + K[3,2]*x2)) - M[3]*x3
+  
   
     list(c(dx1,dx2,dx3))    # give the change rates to the solver
   }
