@@ -49,7 +49,7 @@ require(deSolve) # load the ode package
 
 set.seed(34)
 
-num = 4      # network number 
+num = 1      # network number 
 n = 9        # gene
 trial = 100  # trial
 trshd = 0.001 # threshold for different states
@@ -62,7 +62,7 @@ x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0 = randset*matrix(round(runif(trial*n),randset), trial, n) 
 
 # Time series
-ph = 40
+ph = 100
 times <- seq(0,ph,0.2)  # time steps for output
 parms <- c()          # parameter (if necesarry)
 temp1 = mat.or.vec(n,1)
@@ -98,7 +98,7 @@ for (p in 1:num) {
       temp1[temp1 == 0] = 1
       temp2 = (N<0)*P[node,]*x
       temp2[temp2 == 0] = 1
-      dx[node] = A[node]*prod(temp1)/(prod(1+temp1)*prod(temp2)) - M[node]*x[node]
+      dx[node] = A[node]*prod(temp1)/(prod(1+temp1)*prod(1+temp2)) - M[node]*x[node]
     }
     
     list(dx)    # give the change rates to the solver
@@ -124,7 +124,7 @@ for (p in 1:num) {
   maxY = 2*max(xr[,,length(xr)/(n*trial)])
   #maxY = max( c(max(x1r),max(x2r),max(x3r)))
   
-  png(filename = paste("./data/N", n, "-T", trial,"-P",p, ".png", sep=""), 
+  png(filename = paste("./data1/N", n, "-T", trial,"-P",p, ".png", sep=""), 
       width = 480, height = 480, 
       units = "px", pointsize = 12, bg = "white")
   
