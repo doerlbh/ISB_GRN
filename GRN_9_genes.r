@@ -49,7 +49,7 @@ require(deSolve) # load the ode package
 
 set.seed(34)
 
-num = 1      # network number 
+num = 5      # network number 
 n = 9        # gene
 trial = 100  # trial
 trshd = 0.001 # threshold for different states
@@ -118,7 +118,7 @@ while (p <= num) {
     for (node in 1:n) {
       xr[t,node,] <- res[,node+1]  
     }
-    print(dim(res))
+    #print(dim(res))
     oldt = length(times);
     pht = 2*ph;
     timest = seq(0,pht,0.1);
