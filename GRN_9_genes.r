@@ -61,10 +61,6 @@ Prandset = 1000 # range of parameters
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0 = randset*matrix(round(runif(trial*n),randset), trial, n) 
 
-# Time series
-ph = 100
-times <- seq(0,ph,0.2)  # time steps for output
-parms <- c()          # parameter (if necesarry)
 temp1 = mat.or.vec(n,1)
 temp2 = mat.or.vec(n,1)
 
@@ -106,15 +102,24 @@ for (p in 1:num) {
   
   # solve ODE
   xr = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
+  
+  # Initial Time series
+  ph = 100
+  parms = c()          # parameter (if necesarry)
+  sstrshd = 1e-8       # threshold for steady states
+  
   for (i in 1:trial){
-    
+    times <- seq(0,ph,0.1) 
     x0r <- x0[i,]
     res <- lsoda(x0r,times, func, parms)   # solve it
     res <- as.data.frame(res)             # make a data frame
-    
     for (node in 1:n) {
       xr[i,node,] <- res[,node+1]  
     }
+    if (abs(xr[i,length(times)]-xr[i,length(times)-1]) > sstrshd) {
+      ph = 2*ph
+    }
+    
   }
   
   # plot gene time profiles                                                       
