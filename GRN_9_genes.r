@@ -104,7 +104,7 @@ for (p in 1:num) {
   ph = 100
   parms = c()          # parameter (if necesarry)
   sstrshd = 1e-8       # threshold for steady states
-  times <- seq(0,ph,0.1) 
+  times = seq(0,ph,0.1) 
   xr = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
   
   t = 1;
@@ -116,11 +116,14 @@ for (p in 1:num) {
       xr[t,node,] <- res[,node+1]  
     }
     if (mean(abs(xr[t,,length(times)]-xr[t,,length(times)-1])) > sstrshd) {
+      oldt = length(times);
       ph = 2*ph;
-      times <- seq(0,ph,0.1) 
-      xrt = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
+      times = seq(0,ph,0.1);
+      xrt = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)));
+      xrt[,1:oldt,] = xr[,1:oldt,];
+      xrt[,oldt+1:length(times),]=xr[,oldt,];
     }
-    t = t - 1
+    t = t - 1;
   }
   
   # plot gene time profiles                                                       
