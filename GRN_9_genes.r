@@ -123,8 +123,11 @@ while (t <= trial) {
   timest = seq(0,pht,0.1);
   xrt = array(rep(1, trial*n*length(timest)), dim=c(trial,n,length(timest)));
   xrt[,,1:oldt] = xr[,,1:oldt];
-  xrt[,,oldt+1:length(times)]=xr[,,oldt];
-  
+  for (i in 1:trial){
+    for (tt in oldt+1:length(timest)) {
+      xrt[i,,tt]=xr[i,,oldt];
+    }
+  }
   if (mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-1])) > sstrshd) {
     ph = pht;
     xr = xrt; 
