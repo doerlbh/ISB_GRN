@@ -49,10 +49,10 @@ require(deSolve) # load the ode package
 
 set.seed(34)
 
-num = 5      # network number 
+num = 2      # network number 
 n = 9        # gene
 trial = 100  # trial
-trshd = 0.001 # threshold for different states
+trshd = 0.0001 # threshold for different states
 
 # Starting values
 randset = 1000  # range of 
@@ -146,28 +146,31 @@ while (p <= num) {
   #graphics.off()
   #windows(xpos=1,ypos=-50,width=n,height=4)
   
-  maxY = 2e20*max(xr[,,length(xr)/(n*trial)])
-  #maxY = max( c(max(x1r),max(x2r),max(x3r)))
-  
-  png(filename = paste("./data2/N", n, "-T", trial,"-P",p, ".png", sep=""), 
-      width = 480, height = 480, 
-      units = "px", pointsize = 12, bg = "white")
-  
-  plot(times,xr[1,1,],ylim=c(0, maxY), main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
-       type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,0,1/n))
-  #legend("topleft", lty=1:1)
   states = 1;
   
   add = (2>1)
-  #if (mean(abs(xr[1,,length(xr)/(n*trial)] - xr[1,,length(xr)/(n*trial)]))<trshd) {
-  # p = p - 1;
-  #  } else {
-  for (i in 1:trial){
-    for (node in 1:n) {
-      lines(times,xr[i,node,],lwd=2,col=rgb(0,0,node/n))
-      add = add*(abs(xr[i,node,length(xr)/(n*trial)] - xr[1,node,length(xr)/(n*trial)])<trshd)
+  if (mean(abs(xr[1,,length(xr)/(n*trial)] - xr[1,,length(xr)/(n*trial)]))<trshd) {
+    p = p - 1;
+  } else {
+    for (i in 1:trial){
+      for (node in 1:n) {
+        lines(times,xr[i,node,],lwd=2,col=rgb(0,0,node/n))
+        add = add*(abs(xr[i,node,length(xr)/(n*trial)] - xr[1,node,length(xr)/(n*trial)])<trshd)
+      }
+      states = states + !add
     }
-    states = states + !add
+    
+    maxY = 2e20*max(xr[,,length(xr)/(n*trial)])
+    #maxY = max( c(max(x1r),max(x2r),max(x3r)))
+    
+    png(filename = paste("./data_20160804/N", n, "-T", trial,"-P",p, ".png", sep=""), 
+        width = 480, height = 480, 
+        units = "px", pointsize = 12, bg = "white")
+    
+    plot(times,xr[1,1,],ylim=c(0, maxY), main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
+         type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,0,1/n))
+    #legend("topleft", lty=1:1)
+    
   }
   mtext(paste(n,"-gene ",states, "-state network #", p, sep=""))
   dev.off()
