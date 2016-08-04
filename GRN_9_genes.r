@@ -71,87 +71,98 @@ M = mat.or.vec(n,1)   # gene degradation rate
 P = mat.or.vec(n,n)   # parameters, i.e. gene-gene interaction (repress or activate) 
 N = mat.or.vec(n,n)   # interaction types
 
-for (p in 1:num) {
-  P = Prandset*matrix(round(runif(n*n),Prandset), n, n) 
-  M = matrix(round(runif(n*1), Prandset),n,1)
-  A = 100*diag(P)
-  
+p = 1;
+#while (p <= num) {
+P = Prandset*matrix(round(runif(n*n),Prandset), n, n) 
+M = matrix(round(runif(n*1), Prandset),n,1)
+A = 100*diag(P)
+
+for (node in 1:n) {
+  N[node,] = sample(c(1, 0,-1),n,TRUE)
+  N[node,node] = 0
+  #print(N)
+}
+
+
+# ODE function
+func <- function(t,xx,p)
+{
+  dx = mat.or.vec(n,1)
+  #print(length(xx))
+  x = xx  
   for (node in 1:n) {
-    N[node,] = sample(c(1, 0,-1),n,TRUE)
-    N[node,node] = 0
-    #print(N)
+    temp1 = (N>0)*P[node,]*x
+    temp1[temp1 == 0] = 1
+    temp2 = (N<0)*P[node,]*x
+    temp2[temp2 == 0] = 1
+    dx[node] = A[node]*prod(temp1)/(prod(1+temp1)*prod(1+temp2)) - M[node]*x[node]
   }
   
-  
-  # ODE function
-  func <- function(t,xx,p)
-  {
-    dx = mat.or.vec(n,1)
-    #print(xx)
-    x = xx  
-    for (node in 1:n) {
-      temp1 = (N>0)*P[node,]*x
-      temp1[temp1 == 0] = 1
-      temp2 = (N<0)*P[node,]*x
-      temp2[temp2 == 0] = 1
-      dx[node] = A[node]*prod(temp1)/(prod(1+temp1)*prod(1+temp2)) - M[node]*x[node]
-    }
-    
-    list(dx)    # give the change rates to the solver
+  list(dx)    # give the change rates to the solver
+}
+
+# solve ODE
+ph = 100
+parms = c()          # parameter (if necesarry)
+sstrshd = 1e-8       # threshold for steady states
+times = seq(0,ph,0.1) 
+xr = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
+
+t = 1;
+while (t <= trial) {
+  #print("t")
+  #print(t);
+  x0r <- x0[t,]
+  res <- lsoda(x0r,times, func, parms)   # solve it
+  res <- as.data.frame(res)             # make a data frame
+  for (node in 1:n) {
+    xr[t,node,] <- res[,node+1]  
   }
-  
-  # solve ODE
-  ph = 100
-  parms = c()          # parameter (if necesarry)
-  sstrshd = 1e-8       # threshold for steady states
-  times = seq(0,ph,0.1) 
-  xr = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
-  
-  t = 1;
-  while (t <= trial) {
-    x0r <- x0[t,]
-    res <- lsoda(x0r,times, func, parms)   # solve it
-    res <- as.data.frame(res)             # make a data frame
-    for (node in 1:n) {
-      xr[t,node,] <- res[,node+1]  
-    }
-    if (mean(abs(xr[t,,length(times)]-xr[t,,length(times)-1])) > sstrshd) {
-      oldt = length(times);
-      ph = 2*ph;
-      times = seq(0,ph,0.1);
-      xrt = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)));
-      xrt[,1:oldt,] = xr[,1:oldt,];
-      xrt[,oldt+1:length(times),]=xr[,oldt,];
-    }
+  if (mean(abs(xr[t,,length(times)]-xr[t,,length(times)-1])) > sstrshd) {
+    oldt = length(times);
+    ph = 2*ph;
+    times = seq(0,ph,0.1);
+    xrt = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)));
+    xrt[,1:oldt,] = xr[,1:oldt,];
+    xrt[,oldt+1:length(times),]=xr[,oldt,];
     t = t - 1;
   }
-  
-  # plot gene time profiles                                                       
-  #graphics.off()
-  #windows(xpos=1,ypos=-50,width=n,height=4)
-  
-  maxY = 2*max(xr[,,length(xr)/(n*trial)])
-  #maxY = max( c(max(x1r),max(x2r),max(x3r)))
-  
-  png(filename = paste("./data1/N", n, "-T", trial,"-P",p, ".png", sep=""), 
-      width = 480, height = 480, 
-      units = "px", pointsize = 12, bg = "white")
-  
-  plot(times,xr[1,1,],ylim=c(0, maxY), main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
-       type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,0,1/n))
-  #legend("topleft", lty=1:1)
-  states = 1;
-  add = (abs(xr[1,1,length(xr)/(n*trial)] - xr[1,1,length(xr)/(n*trial)])<trshd)
-  for (i in 1:trial){
-    for (node in 1:n) {
-      lines(times,xr[i,node,],lwd=2,col=rgb(0,0,node/n))
-      add = add*(abs(xr[i,node,length(xr)/(n*trial)] - xr[1,node,length(xr)/(n*trial)])<trshd)
-    }
-    states = states + !add
-  }
-  mtext(paste(n,"-gene ",states, "-state network #", p, sep=""))
-  dev.off()
+  t = t + 1;
+  #print(ph)
 }
+
+# plot gene time profiles                                                       
+#graphics.off()
+#windows(xpos=1,ypos=-50,width=n,height=4)
+
+maxY = 2*max(xr[,,length(xr)/(n*trial)])
+#maxY = max( c(max(x1r),max(x2r),max(x3r)))
+
+png(filename = paste("./data2/N", n, "-T", trial,"-P",p, ".png", sep=""), 
+    width = 480, height = 480, 
+    units = "px", pointsize = 12, bg = "white")
+
+plot(times,xr[1,1,],ylim=c(0, maxY), main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
+     type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,0,1/n))
+#legend("topleft", lty=1:1)
+states = 1;
+
+add = (2>1)
+#if (mean(abs(xr[1,,length(xr)/(n*trial)] - xr[1,,length(xr)/(n*trial)]))<trshd) {
+# p = p - 1;
+#  } else {
+for (i in 1:trial){
+  for (node in 1:n) {
+    lines(times,xr[i,node,],lwd=2,col=rgb(0,0,node/n))
+    add = add*(abs(xr[i,node,length(xr)/(n*trial)] - xr[1,node,length(xr)/(n*trial)])<trshd)
+  }
+  states = states + !add
+}
+mtext(paste(n,"-gene ",states, "-state network #", p, sep=""))
+dev.off()
+p = p + 1;
+
+
 
 
 
