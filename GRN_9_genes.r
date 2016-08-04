@@ -170,10 +170,9 @@ while (p <= num) {
     plot(times,xr[1,1,],ylim=c(0, maxY), main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
          type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,0,1/n))
     #legend("topleft", lty=1:1)
-    
+    mtext(paste(n,"-gene ",states, "-state network #", p, sep=""))
+    dev.off()
   }
-  mtext(paste(n,"-gene ",states, "-state network #", p, sep=""))
-  dev.off()
   p = p + 1;
 }
 
