@@ -104,7 +104,7 @@ func <- function(t,xx,p)
 # solve ODE
 ph = 100
 parms = c()          # parameter (if necesarry)
-sstrshd = 1e-8       # threshold for steady states
+sstrshd = 1e-18       # threshold for steady states
 times = seq(0,ph,0.1) 
 xr = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
 
@@ -118,15 +118,19 @@ while (t <= trial) {
   for (node in 1:n) {
     xr[t,node,] <- res[,node+1]  
   }
-  if (mean(abs(xr[t,,length(times)]-xr[t,,length(times)-1])) > sstrshd) {
-    oldt = length(times);
-    ph = 2*ph;
-    times = seq(0,ph,0.1);
-    xrt = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)));
-    xrt[,1:oldt,] = xr[,1:oldt,];
-    xrt[,oldt+1:length(times),]=xr[,oldt,];
+  oldt = length(times);
+  pht = 2*ph;
+  timest = seq(0,pht,0.1);
+  xrt = array(rep(1, trial*n*length(timest)), dim=c(trial,n,length(timest)));
+  xrt[,,1:oldt] = xr[,,1:oldt];
+  xrt[,,oldt+1:length(times)]=xr[,,oldt];
+  
+  if (mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-1])) > sstrshd) {
+    ph = pht;
+    xr = xrt; 
     t = t - 1;
   }
+  
   t = t + 1;
   #print(ph)
 }
