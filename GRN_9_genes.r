@@ -54,9 +54,13 @@ n = 9        # gene
 trial = 100  # trial
 trshd = 0.0001 # threshold for different states
 
+Nstate = mat.or.vec(num,1)  # store how many states each network can have
+Nss = NULL      # store all the steady states 
+ssc = 1;
+
 # Starting values
 randset = 1000  # range of 
-Prandset = 1000 # range of parameters
+Prandset = 10000 # range of parameters
 
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0 = randset*matrix(round(runif(trial*n),randset), trial, n) 
@@ -104,7 +108,7 @@ while (p <= num) {
   # solve ODE
   ph = 100
   parms = c()          # parameter (if necesarry)
-  sstrshd = 1e-18       # threshold for steady states
+  sstrshd = 1e-8       # threshold for steady states
   times = seq(0,ph,0.1) 
   xr = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
   
@@ -147,20 +151,12 @@ while (p <= num) {
   #windows(xpos=1,ypos=-50,width=n,height=4)
   
   states = 1;
-  
   add = (2>1)
+  
   if (mean(abs(xr[1,,length(xr)/(n*trial)] - xr[1,,length(xr)/(n*trial)]))<trshd) {
     p = p - 1;
   } else {
-    for (i in 1:trial){
-      for (node in 1:n) {
-        lines(times,xr[i,node,],lwd=2,col=rgb(0,0,node/n))
-        add = add*(abs(xr[i,node,length(xr)/(n*trial)] - xr[1,node,length(xr)/(n*trial)])<trshd)
-      }
-      states = states + !add
-    }
-    
-    maxY = 2e20*max(xr[,,length(xr)/(n*trial)])
+    maxY = max(xr)
     #maxY = max( c(max(x1r),max(x2r),max(x3r)))
     
     png(filename = paste("./data_20160804/N", n, "-T", trial,"-P",p, ".png", sep=""), 
@@ -171,6 +167,21 @@ while (p <= num) {
          type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,0,1/n))
     #legend("topleft", lty=1:1)
     mtext(paste(n,"-gene ",states, "-state network #", p, sep=""))
+    
+    Nss = cbind(Nss, xr[1,,length(xr)/(n*trial)]);
+    for (i in 1:trial){
+      if (meanabs(xr[i,length(xr)/(n*trial)] - xr[1,node,length(xr)/(n*trial)])<trshd) {
+        ssc = ssc + 1;
+      }
+      Nss = cbind(Nss, xr[1,,length(xr)/(n*trial)]);        
+      add = add*(abs(xr[i,node,length(xr)/(n*trial)] - xr[1,node,length(xr)/(n*trial)])<trshd)
+      
+      for (node in 1:n) {
+        lines(times,xr[i,node,],lwd=2,col=rgb(0,0,node/n));
+        }
+      states = states + !add
+    }
+    
     dev.off()
   }
   p = p + 1;
