@@ -101,25 +101,26 @@ for (p in 1:num) {
   }
   
   # solve ODE
-  xr = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
-  
-  # Initial Time series
   ph = 100
   parms = c()          # parameter (if necesarry)
   sstrshd = 1e-8       # threshold for steady states
+  times <- seq(0,ph,0.1) 
+  xr = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
   
-  for (i in 1:trial){
-    times <- seq(0,ph,0.1) 
-    x0r <- x0[i,]
+  t = 1;
+  while (t <= trial) {
+    x0r <- x0[t,]
     res <- lsoda(x0r,times, func, parms)   # solve it
     res <- as.data.frame(res)             # make a data frame
     for (node in 1:n) {
-      xr[i,node,] <- res[,node+1]  
+      xr[t,node,] <- res[,node+1]  
     }
-    if (abs(xr[i,length(times)]-xr[i,length(times)-1]) > sstrshd) {
-      ph = 2*ph
+    if (mean(abs(xr[t,,length(times)]-xr[t,,length(times)-1])) > sstrshd) {
+      ph = 2*ph;
+      times <- seq(0,ph,0.1) 
+      xrt = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
     }
-    
+    t = t - 1
   }
   
   # plot gene time profiles                                                       
