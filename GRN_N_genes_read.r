@@ -65,8 +65,45 @@ require(deSolve) # load the ode package
 set.seed(34)
 Opath="./data_20160807/"
 
-num = 2      # network number 
 n = 5        # gene
+pert = 20    # time steps of perturbation
+
+# Start writing to an output file
+sink(paste("N",n,"-X",p,".txt",sep=""))
+
+cat(sprintf("Network %d with %d nodes has %d states:\n", p, n, ssc))
+cat("=============================\n")
+cat("Network parameters:\n")
+cat("\n P is \n")
+
+for(node in 1:n) {
+  cat(P[i,]);
+}
+
+cat("\n M is \n")
+cat(M);
+
+cat("\n A is \n")
+cat(A);
+
+cat("\n N is \n")
+cat(N)
+
+cat("\n Network steady states: \n")    
+
+for(j in 1:ssc) {
+  cat(P[,j]);
+}
+
+cat("=============================\n")
+
+# Stop writing to the file
+sink()
+
+
+
+
+num = 2      # network number 
 trial = 50  # trial
 trshd = 0.0001 # threshold for different states
 sstrshd = 1e-8       # threshold for equilibrium of steady states
@@ -201,37 +238,6 @@ while (p <= num) {
     
     dev.off()
     
-    # Start writing to an output file
-    sink(paste("N",n,"-X",p,".txt",sep=""))
-    
-    cat(sprintf("Network %d with %d nodes has %d states:\n", p, n, ssc))
-    cat("=============================\n")
-    cat("Network parameters:\n")
-    cat("\n P is \n")
-    
-    for(node in 1:n) {
-      cat(P[i,]);
-    }
-    
-    cat("\n M is \n")
-    cat(M);
-    
-    cat("\n A is \n")
-    cat(A);
-    
-    cat("\n N is \n")
-    cat(N)
-    
-    cat("\n Network steady states: \n")    
-    
-    for(j in 1:ssc) {
-      cat(P[,j]);
-    }
-    
-    cat("=============================\n")
-    
-    # Stop writing to the file
-    sink()
     
   }
   p = p + 1;
