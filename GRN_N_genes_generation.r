@@ -224,7 +224,7 @@ while (p <= num) {
     sink()
     
     # For better reading
-    sink(paste("N",n,"-X",p,"-S",ssc,"-Para.txt",sep=""))
+    sink(paste("N",n,"-X",p,"-Para.txt",sep=""))
     for(node in 1:n) {
       cat(P[i,]);
     }
@@ -232,7 +232,7 @@ while (p <= num) {
     cat(N)
     sink()
     
-    sink(paste("N",n,"-X",p,"-S",ssc,"-SS.txt",sep=""))
+    sink(paste("N",n,"-X",p,"-SS.txt",sep=""))
     for(j in 1:ssc) {
       cat(P[,j]);
     }
