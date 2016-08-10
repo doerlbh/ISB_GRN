@@ -158,10 +158,17 @@ while (p <= num) {
   #graphics.off()
   #windows(xpos=1,ypos=-50,width=n,height=4)
   
-  for (node in 1:n) {
-    abs(xr[,node,length(xr)/(n*trial)] - xr[1,,length(xr)/(n*trial)])
+  Nss = cbind(Nss, xr[1,,length(xr)/(n*trial)]);
+  for (i in 1:trial){
+    for (j in 1:length(Nss)/node) {
+      if (mean(abs(xr[i,,length(xr)/(n*trial)] - Nss[,j]))>trshd) {
+        ssc = ssc + 1;
+        Nss = cbind(Nss, xr[i,,length(xr)/(n*trial)]);        
+      }
+    }
   }
-  if (mean(abs(xr[1,,length(xr)/(n*trial)] - xr[1,,length(xr)/(n*trial)]))<trshd) {
+  
+  if (ssc == 1) {
     p = p - 1;
   } else {
     maxY = max(xr)
@@ -175,14 +182,7 @@ while (p <= num) {
          type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,0,1/n))
     #legend("topleft", lty=1:1)
     
-    Nss = cbind(Nss, xr[1,,length(xr)/(n*trial)]);
     for (i in 1:trial){
-      for (j in 1:length(Nss)/node) {
-        if (mean(abs(xr[i,,length(xr)/(n*trial)] - Nss[,j]))>trshd) {
-          ssc = ssc + 1;
-          Nss = cbind(Nss, xr[i,,length(xr)/(n*trial)]);        
-        }
-      }
       for (node in 1:n) {
         lines(times,xr[i,node,],lwd=2,col=rgb(0,0,node/n));
       }
@@ -191,6 +191,9 @@ while (p <= num) {
     mtext(paste(n,"_gene_",ssc, "_state_network_#", p, sep=""))
     
     dev.off()
+    
+    
+    
   }
   p = p + 1;
 }
