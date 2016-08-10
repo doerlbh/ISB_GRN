@@ -55,20 +55,20 @@
 rm(list=ls())
 require(deSolve) # load the ode package
 
-set.seed(34)
+set.seed(1234)
 Opath="./data_20160807/"
 
 num = 2      # network number 
-n = 5        # gene
+n = 9        # gene
 trial = 50  # trial
-trshd = 0.0001 # threshold for different states
+trshd = 1e-5 # threshold for different states
 sstrshd = 1e-8       # threshold for equilibrium of steady states
 
 Nstate = mat.or.vec(num,1)  # store how many states each network can have
 
 # Starting values
-randset = 1000  # range of 
-Prandset = 10000 # range of parameters
+randset = 100  # range of initial states
+Prandset = 1000 # range of parameters
 
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0 = randset*matrix(round(runif(trial*n),randset), trial, n) 
@@ -84,6 +84,7 @@ P = mat.or.vec(n,n)   # parameters, i.e. gene-gene interaction (repress or activ
 N = mat.or.vec(n,n)   # interaction types
 
 p = 1;
+countcall = 1;
 while (p <= num) {
   Nss = NULL      # store all the steady states 
   ssc = 1;
@@ -97,7 +98,6 @@ while (p <= num) {
     N[node,node] = 0
     #print(N)
   }
-  
   
   # ODE function
   func <- function(t,xx,p)
@@ -194,7 +194,6 @@ while (p <= num) {
     
     dev.off()
     
-    # Start writing to an output file
     sink(paste("N",n,"-X",p,".txt",sep=""))
     
     cat(sprintf("Network %d with %d nodes has %d states:\n", p, n, ssc))
@@ -222,11 +221,28 @@ while (p <= num) {
     }
     
     cat("=============================\n")
-    
-    # Stop writing to the file
     sink()
     
+    # For better reading
+    sink(paste("N",n,"-X",p,"-S",ssc,"-Para.txt",sep=""))
+    for(node in 1:n) {
+      cat(P[i,]);
+    }
+    cat(M);
+    cat(N)
+    sink()
+    
+    sink(paste("N",n,"-X",p,"-S",ssc,"-SS.txt",sep=""))
+    for(j in 1:ssc) {
+      cat(P[,j]);
+    }
+    sink()
+    
+    Nstate[p] = ssc;
   }
+  
   p = p + 1;
+  cat("round ", countcall);
+  countcall = countcall + 1;
 }
 
