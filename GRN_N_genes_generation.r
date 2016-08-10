@@ -158,11 +158,8 @@ while (p <= num) {
   #graphics.off()
   #windows(xpos=1,ypos=-50,width=n,height=4)
   
-  states = 1;
-  add = (2>1)
-  
   for (node in 1:n) {
-  abs(xr[,node,length(xr)/(n*trial)] - xr[1,,length(xr)/(n*trial)])
+    abs(xr[,node,length(xr)/(n*trial)] - xr[1,,length(xr)/(n*trial)])
   }
   if (mean(abs(xr[1,,length(xr)/(n*trial)] - xr[1,,length(xr)/(n*trial)]))<trshd) {
     p = p - 1;
@@ -177,21 +174,21 @@ while (p <= num) {
     plot(times,xr[1,1,],ylim=c(0, maxY), main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
          type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,0,1/n))
     #legend("topleft", lty=1:1)
-    mtext(paste(n,"-gene ",states, "-state network #", p, sep=""))
     
     Nss = cbind(Nss, xr[1,,length(xr)/(n*trial)]);
     for (i in 1:trial){
-      if (meanabs(xr[i,length(xr)/(n*trial)] - xr[1,node,length(xr)/(n*trial)])<trshd) {
-        ssc = ssc + 1;
+      for (j in 1:length(Nss)/node) {
+        if (mean(abs(xr[i,,length(xr)/(n*trial)] - Nss[,j]))>trshd) {
+          ssc = ssc + 1;
+          Nss = cbind(Nss, xr[i,,length(xr)/(n*trial)]);        
+        }
       }
-      Nss = cbind(Nss, xr[1,,length(xr)/(n*trial)]);        
-      add = add*(abs(xr[i,node,length(xr)/(n*trial)] - xr[1,node,length(xr)/(n*trial)])<trshd)
-      
       for (node in 1:n) {
         lines(times,xr[i,node,],lwd=2,col=rgb(0,0,node/n));
-        }
-      states = states + !add
+      }
     }
+    
+    mtext(paste(n,"_gene_",ssc, "_state_network_#", p, sep=""))
     
     dev.off()
   }
