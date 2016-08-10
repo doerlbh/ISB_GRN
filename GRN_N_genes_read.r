@@ -68,9 +68,14 @@ Opath="./data_20160807/"
 
 n = 9        # gene
 pert = 20    # time steps of perturbation
+num = 2
 
-SS <- read.table(paste("N9-X1-S-SS.txt",sep=""), header=F)
-PP <- read.table(paste("N9-X1-S-Para.txt",sep=""), header=F)
+# for (i in 1:num) {
+#SS <- read.table(paste("N9-X", i,"-SS.txt",sep=""), header=F)
+#PP <- read.table(paste("N9-X", i,"-Para.txt",sep=""), header=F)
+#}
+SS <- read.table(paste("N9-X1-SS.txt",sep=""), header=F)
+PP <- read.table(paste("N9-X1-Para.txt",sep=""), header=F)
 
 # Start writing to an output file
 sink(paste("N",n,"-X",p,".txt",sep=""))

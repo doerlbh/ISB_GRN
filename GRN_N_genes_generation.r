@@ -61,7 +61,7 @@ Opath="./data_20160807/"
 num = 2      # network number 
 n = 9        # gene
 trial = 50  # trial
-trshd = 1e-5 # threshold for different states
+trshd = 1e-6 # threshold for different states
 sstrshd = 1e-8       # threshold for equilibrium of steady states
 
 Nstate = mat.or.vec(num,1)  # store how many states each network can have
@@ -194,7 +194,7 @@ while (p <= num) {
     
     dev.off()
     
-    sink(paste("N",n,"-X",p,".txt",sep=""))
+    sink(paste("N",n,"-X",p,"-S",ssc,".txt",sep=""))
     
     cat(sprintf("Network %d with %d nodes has %d states:\n", p, n, ssc))
     cat("=============================\n")
@@ -242,7 +242,7 @@ while (p <= num) {
   }
   
   p = p + 1;
-  cat("round ", countcall);
+  cat("round ", countcall, "\n");
   countcall = countcall + 1;
 }
 
