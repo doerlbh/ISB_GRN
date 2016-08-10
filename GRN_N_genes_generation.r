@@ -62,8 +62,6 @@ trial = 100  # trial
 trshd = 0.0001 # threshold for different states
 
 Nstate = mat.or.vec(num,1)  # store how many states each network can have
-Nss = NULL      # store all the steady states 
-ssc = 1;
 
 # Starting values
 randset = 1000  # range of 
@@ -84,6 +82,9 @@ N = mat.or.vec(n,n)   # interaction types
 
 p = 1;
 while (p <= num) {
+  Nss = NULL      # store all the steady states 
+  ssc = 1;
+  
   P = Prandset*matrix(round(runif(n*n),Prandset), n, n) 
   M = matrix(round(runif(n*1), Prandset),n,1)
   A = 100*diag(P)
@@ -160,6 +161,9 @@ while (p <= num) {
   states = 1;
   add = (2>1)
   
+  for (node in 1:n) {
+  abs(xr[,node,length(xr)/(n*trial)] - xr[1,,length(xr)/(n*trial)])
+  }
   if (mean(abs(xr[1,,length(xr)/(n*trial)] - xr[1,,length(xr)/(n*trial)]))<trshd) {
     p = p - 1;
   } else {
