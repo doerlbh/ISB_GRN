@@ -1,10 +1,10 @@
 # Creating n-gene networks
-# i) Create a nine-gene network
+# i) Create a n-gene network
 # ii) Determine how many steady states it can have in different parameters
 # iii) only keep those who have more than one steady states
 # iv) output the network states
 # Author: Baihan Lin
-# Date:   July 2016
+# Date:   August 2016
 
 # Modified from:
 # Creating 9-gene networks
