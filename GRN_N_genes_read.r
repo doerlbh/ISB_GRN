@@ -63,10 +63,14 @@ rm(list=ls())
 require(deSolve) # load the ode package
 
 set.seed(34)
+Ipath="./data_20160807/"
 Opath="./data_20160807/"
 
-n = 5        # gene
+n = 9        # gene
 pert = 20    # time steps of perturbation
+
+SS <- read.table(paste("N9-X1-S-SS.txt",sep=""), header=F)
+PP <- read.table(paste("N9-X1-S-Para.txt",sep=""), header=F)
 
 # Start writing to an output file
 sink(paste("N",n,"-X",p,".txt",sep=""))

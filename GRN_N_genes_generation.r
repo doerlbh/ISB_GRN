@@ -246,3 +246,6 @@ while (p <= num) {
   countcall = countcall + 1;
 }
 
+sink("SScount.txt")
+cat("ss = ", Nstate, "\n");
+sink()
