@@ -6,6 +6,13 @@
 # Date:   July 2016
 
 # Modified from:
+# Creating 9-gene networks
+# i) Create a nine-gene network
+# ii) Determine how many steady states it can have in different parameters
+# iii) only keep those who have more than one steady states
+# Author: Baihan Lin
+# Date:   July 2016
+
 # Wild Bifurcation without huge assumptions in three-gene dynamics using ODE
 # iv) Determine how many steady states it can have in different parameters
 # v) Explore the bifurcation of the statess
