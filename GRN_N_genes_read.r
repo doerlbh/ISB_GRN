@@ -1,9 +1,9 @@
-# Creating n-gene networks
+# Perturbing n-gene networks
 # i) read a n-gene network
-# ii) Generate time frame
-
+# ii) generate time frame
+# iii) only keep 
 # Author: Baihan Lin
-# Date:   July 2016
+# Date:   August 2016
 
 # Modified from:
 # Creating n-gene networks
@@ -66,120 +66,139 @@ set.seed(1234)
 Ipath="./data_20160807/"
 Opath="./data_20160807/"
 
-n = 9        # gene
 pert = 20    # time steps of perturbation
-num = 2
+num = 2      # num of network
+trail = 10   # num of change of parameters
+Amprg = -1000:1000  # Amplication range
+chg = 1      # perturb how many parameters 
+
+n = 9        # gene
+
 
 # for (i in 1:num) {
 #SS = as.matrix(read.table(paste("N9-X", i,"-SS.txt",sep=""), header=F))
 #PP = as.matrix(read.table(paste("N9-X", i,"-Para.txt",sep=""), header=F))
-#}
-SS = as.matrix(read.table(paste("N9-X1-SS.txt",sep=""), header=F))
-PP = as.matrix(read.table(paste("N9-X1-Para.txt",sep=""), header=F))
-P = PP[1:length(PP[1,]), 1:length(PP[1,])]
-A = 100*diag(P);
-M = PP[length(PP[1,])+1, 1:length(PP[1,])]
-N = PP[length(PP[1,])+2, 1:length(PP[1,])]
 
-# ODE function
-func <- function(t,xx,p)
-{
-  dx = mat.or.vec(n,1)
-  #print(length(xx))
-  x = xx  
-  for (node in 1:n) {
-    temp1 = (N>0)*P[node,]*x
-    temp1[temp1 == 0] = 1
-    temp2 = (N<0)*P[node,]*x
-    temp2[temp2 == 0] = 1
-    dx[node] = A[node]*prod(temp1)/(prod(1+temp1)*prod(1+temp2)) - M[node]*x[node]
+for (c in 1:trail) { 
+  Amp = sample(Amprg,1,TRUE)    # Amplication
+  
+  SS = as.matrix(read.table(paste("N9-X1-SS.txt",sep=""), header=F));
+  PP = as.matrix(read.table(paste("N9-X1-Para.txt",sep=""), header=F));
+  PPc = PP;
+  
+  for (i in 1:chg) {
+    seq = Amp*PP[sample(1:n*(n+1),1,TRUE)]
   }
   
-  list(dx)    # give the change rates to the solver
-}
-
-# solve ODE
-ph = 100
-parms = c()          # parameter (if necesarry)
-times = seq(0,ph,0.1) 
-xr = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
-
-t = 1;
-while (t <= trial) {
-  #print("t")
-  #print(t);
-  x0r <- x0[t,]
-  res <- lsoda(x0r,times, func, parms)   # solve it
-  res <- as.data.frame(res)             # make a data frame
-  for (node in 1:n) {
-    xr[t,node,] <- res[,node+1]  
+  
+  P = PP[1:length(PP[1,]), 1:length(PP[1,])]
+  A = 100*diag(P);
+  M = PP[length(PP[1,])+1, 1:length(PP[1,])]
+  N = PP[length(PP[1,])+2, 1:length(PP[1,])]
+  
+  # perturbation
+  
+  
+  # ODE function
+  func <- function(t,xx,p)
+  {
+    dx = mat.or.vec(n,1)
+    #print(length(xx))
+    x = xx  
+    for (node in 1:n) {
+      temp1 = (N>0)*P[node,]*x
+      temp1[temp1 == 0] = 1
+      temp2 = (N<0)*P[node,]*x
+      temp2[temp2 == 0] = 1
+      dx[node] = A[node]*prod(temp1)/(prod(1+temp1)*prod(1+temp2)) - M[node]*x[node]
+    }
+    
+    list(dx)    # give the change rates to the solver
   }
-  #print(dim(res))
-  oldt = length(times);
-  pht = 2*ph;
-  timest = seq(0,pht,0.1);
-  xrt = array(rep(1, trial*n*length(timest)), dim=c(trial,n,length(timest)));
-  xrt[,,1:oldt] = xr[,,1:oldt];
-  for (trialt in 1:t){
-    for (tt in oldt:length(timest)) {
-      for (node in 1:n) {
-        xrt[trialt,node,tt]=xr[trialt,node,oldt];
+  
+  # solve ODE
+  ph = 100
+  parms = c()          # parameter (if necesarry)
+  times = seq(0,ph,0.1) 
+  xr = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
+  
+  t = 1;
+  while (t <= trial) {
+    #print("t")
+    #print(t);
+    x0r <- x0[t,]
+    res <- lsoda(x0r,times, func, parms)   # solve it
+    res <- as.data.frame(res)             # make a data frame
+    for (node in 1:n) {
+      xr[t,node,] <- res[,node+1]  
+    }
+    #print(dim(res))
+    oldt = length(times);
+    pht = 2*ph;
+    timest = seq(0,pht,0.1);
+    xrt = array(rep(1, trial*n*length(timest)), dim=c(trial,n,length(timest)));
+    xrt[,,1:oldt] = xr[,,1:oldt];
+    for (trialt in 1:t){
+      for (tt in oldt:length(timest)) {
+        for (node in 1:n) {
+          xrt[trialt,node,tt]=xr[trialt,node,oldt];
+        }
+      }
+    }
+    if (mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-1])) > sstrshd) {
+      ph = pht;
+      xr = xrt; 
+      times = timest;
+      t = t - 1;
+    }
+    
+    t = t + 1;
+    #print(ph)
+  }
+  
+  # plot gene time profiles                                                       
+  #graphics.off()
+  #windows(xpos=1,ypos=-50,width=n,height=4)
+  
+  Nss = cbind(Nss, xr[1,,length(xr)/(n*trial)]);
+  for (i in 1:trial){
+    for (j in 1:round(length(Nss)/node)) {
+      if (mean(abs(xr[i,,length(xr)/(n*trial)] - Nss[,j]))>trshd) {
+        ssc = ssc + 1;
+        Nss = cbind(Nss, xr[i,,length(xr)/(n*trial)]);        
       }
     }
   }
-  if (mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-1])) > sstrshd) {
-    ph = pht;
-    xr = xrt; 
-    times = timest;
-    t = t - 1;
-  }
   
-  t = t + 1;
-  #print(ph)
-}
-
-# plot gene time profiles                                                       
-#graphics.off()
-#windows(xpos=1,ypos=-50,width=n,height=4)
-
-Nss = cbind(Nss, xr[1,,length(xr)/(n*trial)]);
-for (i in 1:trial){
-  for (j in 1:round(length(Nss)/node)) {
-    if (mean(abs(xr[i,,length(xr)/(n*trial)] - Nss[,j]))>trshd) {
-      ssc = ssc + 1;
-      Nss = cbind(Nss, xr[i,,length(xr)/(n*trial)]);        
+  if (ssc == 1) {
+    p = p - 1;
+  } else {
+    maxY = max(xr)
+    #maxY = max( c(max(x1r),max(x2r),max(x3r)))
+    
+    png(filename = paste(Opath,"N", n, "-T", trial,"-P",p, ".png", sep=""), 
+        width = 480, height = 480, 
+        units = "px", pointsize = 12, bg = "white")
+    
+    plot(times,xr[1,1,],ylim=c(0, maxY), main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
+         type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,0,1/n))
+    #legend("topleft", lty=1:1)
+    
+    for (i in 1:trial){
+      for (node in 1:n) {
+        lines(times,xr[i,node,],lwd=2,col=rgb(0,0,node/n));
+      }
     }
-  }
-}
-
-if (ssc == 1) {
-  p = p - 1;
-} else {
-  maxY = max(xr)
-  #maxY = max( c(max(x1r),max(x2r),max(x3r)))
-  
-  png(filename = paste(Opath,"N", n, "-T", trial,"-P",p, ".png", sep=""), 
-      width = 480, height = 480, 
-      units = "px", pointsize = 12, bg = "white")
-  
-  plot(times,xr[1,1,],ylim=c(0, maxY), main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
-       type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,0,1/n))
-  #legend("topleft", lty=1:1)
-  
-  for (i in 1:trial){
-    for (node in 1:n) {
-      lines(times,xr[i,node,],lwd=2,col=rgb(0,0,node/n));
-    }
+    
+    mtext(paste(n,"_gene_",ssc, "_state_network_#", p, sep=""))
+    
+    dev.off()
+    
+    
   }
   
-  mtext(paste(n,"_gene_",ssc, "_state_network_#", p, sep=""))
-  
-  dev.off()
-  
-  
 }
-
-
+#}
 
 
 
