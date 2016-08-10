@@ -198,11 +198,27 @@ while (p <= num) {
     
     cat(sprintf("Network %d with %d nodes has %d states:\n", p, n, ssc))
     cat("=============================\n")
-    cat("Network parameters:")
-
-    cat("Network steady states:")    
-    print(Nss)
-    cat("y =", y, "\n")
+    cat("Network parameters:\n")
+    cat("\n P is \n")
+    
+    for(node in 1:n) {
+      cat(P[i,]);
+    }
+    
+    cat("\n M is \n")
+    cat(M);
+    
+    cat("\n A is \n")
+    cat(A);
+    
+    cat("\n N is \n")
+    cat(N)
+    
+    cat("\n Network steady states: \n")    
+    
+    for(j in 1:ssc) {
+      cat(P[,j]);
+    }
     
     cat("=============================\n")
     
