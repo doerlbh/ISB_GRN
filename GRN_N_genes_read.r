@@ -74,30 +74,35 @@ chg = 1      # perturb how many parameters
 
 n = 9        # gene
 
-
 # for (i in 1:num) {
 #SS = as.matrix(read.table(paste("N9-X", i,"-SS.txt",sep=""), header=F))
 #PP = as.matrix(read.table(paste("N9-X", i,"-Para.txt",sep=""), header=F))
 
-for (c in 1:trail) { 
-  Amp = sample(Amprg,1,TRUE)    # Amplication
+c = 1;
+while (c < trail) { 
+  Amp = sample(Amprg,1,TRUE);    # Amplication
   
   SS = as.matrix(read.table(paste("N9-X1-SS.txt",sep=""), header=F));
   PP = as.matrix(read.table(paste("N9-X1-Para.txt",sep=""), header=F));
   PPc = PP;
+  n = length(PP[1,]);
   
   for (i in 1:chg) {
-    seq = Amp*PP[sample(1:n*(n+1),1,TRUE)]
+    seq = sample(1:n*(n+1),1,TRUE);
+    PPc[sample(1:n*(n+1),1,TRUE)] = Amp*PPc[sample(1:n*(n+1),1,TRUE)]
   }
   
-  
-  P = PP[1:length(PP[1,]), 1:length(PP[1,])]
+  # normal parameters
+  P = PP[1:n, 1:n];
   A = 100*diag(P);
-  M = PP[length(PP[1,])+1, 1:length(PP[1,])]
-  N = PP[length(PP[1,])+2, 1:length(PP[1,])]
+  M = PP[n+1, 1:n]
+  N = PP[n+2, 1:n]
   
-  # perturbation
-  
+  # perturbation parameters
+  Pc = PPc[1:n, 1:n];
+  Ac = 100*diag(Pc);
+  Mc = PPc[n+1, 1:n]
+  Nc = PPc[n+2, 1:n]
   
   # ODE function
   func <- function(t,xx,p)
@@ -115,6 +120,22 @@ for (c in 1:trail) {
     
     list(dx)    # give the change rates to the solver
   }
+  
+  # perturbation solve ODE
+  parms = c()          # parameter (if necesarry)
+  timesp = seq(0,pert,0.1) 
+  
+  x0r <- x0[t,]
+  res <- lsoda(x0r,times, func, parms)   # solve it
+  res <- as.data.frame(res)             # make a data frame
+  for (node in 1:n) {
+    xr[t,node,] <- res[,node+1]  
+  }
+  
+  
+  
+  xr = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
+  
   
   # solve ODE
   ph = 100
@@ -196,7 +217,7 @@ for (c in 1:trail) {
     
     
   }
-  
+  c = c + 1;
 }
 #}
 
