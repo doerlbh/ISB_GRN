@@ -55,6 +55,7 @@ rm(list=ls())
 require(deSolve) # load the ode package
 
 set.seed(34)
+Opath="./data_20160809/"
 
 num = 2      # network number 
 n = 9        # gene
@@ -174,7 +175,7 @@ while (p <= num) {
     maxY = max(xr)
     #maxY = max( c(max(x1r),max(x2r),max(x3r)))
     
-    png(filename = paste("./data_20160804/N", n, "-T", trial,"-P",p, ".png", sep=""), 
+    png(filename = paste(Opath,"N", n, "-T", trial,"-P",p, ".png", sep=""), 
         width = 480, height = 480, 
         units = "px", pointsize = 12, bg = "white")
     
@@ -192,7 +193,21 @@ while (p <= num) {
     
     dev.off()
     
+    # Start writing to an output file
+    sink(paste("N",n,"-X",p,".txt",sep=""))
     
+    cat(sprintf("Network %d with %d nodes has %d states:\n", p, n, ssc))
+    cat("=============================\n")
+    cat("Network parameters:")
+
+    cat("Network steady states:")    
+    print(Nss)
+    cat("y =", y, "\n")
+    
+    cat("=============================\n")
+    
+    # Stop writing to the file
+    sink()
     
   }
   p = p + 1;
