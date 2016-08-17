@@ -58,11 +58,11 @@ require(deSolve) # load the ode package
 set.seed(1234)
 Opath="./data_20160816/"
 
-num = 2         # network number 
+num = 20         # network number 
 n = 9           # gene
 trial = 50      # trial
-trshd = 0.1     # threshold for different states
-sstrshd = 1e-3  # threshold for equilibrium of steady states
+trshd = 1     # threshold for different states
+sstrshd = 1e-2  # threshold for equilibrium of steady states
 tend = 6000     # threshold for equilibrium vs. non-equlibrium
 zthrs = 1e-2    # threshold for non-trivial states
 
