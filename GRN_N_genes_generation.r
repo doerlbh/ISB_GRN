@@ -56,13 +56,14 @@ rm(list=ls())
 require(deSolve) # load the ode package
 
 set.seed(1234)
-Opath="./data_20160807/"
+Opath="./data_20160817/"
 
-num = 2      # network number 
-n = 9        # gene
-trial = 50  # trial
-trshd = 0.1 # threshold for different states
-sstrshd = 1e-3       # threshold for equilibrium of steady states
+num = 2         # network number 
+n = 9           # gene
+trial = 50      # trial
+trshd = 0.1     # threshold for different states
+sstrshd = 1e-3  # threshold for equilibrium of steady states
+tend = 6000     # threshold for equilibrium vs. non-equlibrium
 
 Nstate = mat.or.vec(num,1)  # store how many states each network can have
 
@@ -135,115 +136,137 @@ while (p <= num) {
     #print(dim(res))
     oldt = length(times);
     pht = 2*ph;
-    timest = seq(0,pht,0.1);
-    xrt = array(rep(1, trial*n*length(timest)), dim=c(trial,n,length(timest)));
-    xrt[,,1:oldt] = xr[,,1:oldt];
-    for (trialt in 1:t){
-      for (tt in oldt:length(timest)) {
-        for (node in 1:n) {
-          xrt[trialt,node,tt]=xr[trialt,node,oldt];
+    if (pht < tend) {
+      timest = seq(0,pht,0.1);
+      xrt = array(rep(1, trial*n*length(timest)), dim=c(trial,n,length(timest)));
+      xrt[,,1:oldt] = xr[,,1:oldt];
+      for (trialt in 1:t){
+        for (tt in oldt:length(timest)) {
+          for (node in 1:n) {
+            xrt[trialt,node,tt]=xr[trialt,node,oldt];
+          }
+        }
+      }
+      if (mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-2])) < sstrshd) {
+        if (mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-5])) < sstrshd) { 
+          if(mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-7])) < sstrshd) { 
+            equ = 1;
+          } else {
+            equ = 0;
+          }
+        } else {
+          equ = 0;
+        }
+      }else {
+        equ = 0;
+      }
+      
+      if (equ == 0) {
+        ph = pht;
+        xr = xrt; 
+        times = timest;
+        t = t - 1;
+      }
+      
+      t = t + 1;
+      #print(ph)
+      end = 0;
+    } else {
+      end = 1;
+    }
+  }
+  
+  if (end == 0) {
+    
+    # plot gene time profiles                                                       
+    #graphics.off()
+    #windows(xpos=1,ypos=-50,width=n,height=4)
+    
+    Nss = cbind(Nss, xr[1,,length(xr)/(n*trial)]);
+    for (i in 1:trial){
+      for (j in 1:round(length(Nss)/node)) {
+        if (mean(abs(xr[i,,length(xr)/(n*trial)] - Nss[,j]))>trshd) {
+          ssc = ssc + 1;
+          Nss = cbind(Nss, xr[i,,length(xr)/(n*trial)]);        
         }
       }
     }
-    if (mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-1])) > sstrshd) {
-      ph = pht;
-      xr = xrt; 
-      times = timest;
-      t = t - 1;
-    }
     
-    t = t + 1;
-    #print(ph)
-  }
-  
-  # plot gene time profiles                                                       
-  #graphics.off()
-  #windows(xpos=1,ypos=-50,width=n,height=4)
-  
-  Nss = cbind(Nss, xr[1,,length(xr)/(n*trial)]);
-  for (i in 1:trial){
-    for (j in 1:round(length(Nss)/node)) {
-      if (mean(abs(xr[i,,length(xr)/(n*trial)] - Nss[,j]))>trshd) {
-        ssc = ssc + 1;
-        Nss = cbind(Nss, xr[i,,length(xr)/(n*trial)]);        
+    if (ssc == 1) {
+      p = p - 1;
+    } else {
+      maxY = max(xr)
+      #maxY = max( c(max(x1r),max(x2r),max(x3r)))
+      
+      png(filename = paste(Opath,"N", n, "-T", trial,"-P",p, ".png", sep=""), 
+          width = 480, height = 480, 
+          units = "px", pointsize = 12, bg = "white")
+      
+      plot(times,xr[1,1,],ylim=c(0, maxY), main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
+           type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,0,1/n))
+      #legend("topleft", lty=1:1)
+      
+      for (i in 1:trial){
+        for (node in 1:n) {
+          lines(times,xr[i,node,],lwd=2,col=rgb(0,0,node/n));
+        }
       }
-    }
-  }
-  
-  if (ssc == 1) {
-    p = p - 1;
-  } else {
-    maxY = max(xr)
-    #maxY = max( c(max(x1r),max(x2r),max(x3r)))
-    
-    png(filename = paste(Opath,"N", n, "-T", trial,"-P",p, ".png", sep=""), 
-        width = 480, height = 480, 
-        units = "px", pointsize = 12, bg = "white")
-    
-    plot(times,xr[1,1,],ylim=c(0, maxY), main=paste("N",n,"-T",trial,"-Trajectory",sep=""),
-         type="l",xlab="t",ylab="x",lwd=2,col=rgb(0,0,1/n))
-    #legend("topleft", lty=1:1)
-    
-    for (i in 1:trial){
-      for (node in 1:n) {
-        lines(times,xr[i,node,],lwd=2,col=rgb(0,0,node/n));
+      
+      mtext(paste(n,"_gene_",ssc, "_state_network_#", p, sep=""))
+      
+      dev.off()
+      
+      sink(paste("N",n,"-X",p,"-S",ssc,".txt",sep=""))
+      
+      cat(sprintf("Network %d with %d nodes has %d states:\n", p, n, ssc))
+      cat("=============================\n")
+      cat("Network parameters:\n")
+      cat("\n P is \n")
+      
+      for(node in 1:n) {
+        cat(P[i,]);
       }
+      
+      cat("\n M is \n")
+      cat(M);
+      
+      cat("\n A is \n")
+      cat(A);
+      
+      cat("\n N is \n")
+      cat(N)
+      
+      cat("\n Network steady states: \n")    
+      
+      for(j in 1:ssc) {
+        cat(P[,j]);
+      }
+      
+      cat("=============================\n")
+      sink()
+      
+      # For better reading
+      sink(paste("N",n,"-X",p,"-Para.txt",sep=""))
+      for(node in 1:n) {
+        cat(P[i,]);
+      }
+      cat(M);
+      cat(N)
+      sink()
+      
+      sink(paste("N",n,"-X",p,"-SS.txt",sep=""))
+      for(j in 1:ssc) {
+        cat(P[,j]);
+      }
+      sink()
+      
+      Nstate[p] = ssc;
     }
     
-    mtext(paste(n,"_gene_",ssc, "_state_network_#", p, sep=""))
-    
-    dev.off()
-    
-    sink(paste("N",n,"-X",p,"-S",ssc,".txt",sep=""))
-    
-    cat(sprintf("Network %d with %d nodes has %d states:\n", p, n, ssc))
-    cat("=============================\n")
-    cat("Network parameters:\n")
-    cat("\n P is \n")
-    
-    for(node in 1:n) {
-      cat(P[i,]);
-    }
-    
-    cat("\n M is \n")
-    cat(M);
-    
-    cat("\n A is \n")
-    cat(A);
-    
-    cat("\n N is \n")
-    cat(N)
-    
-    cat("\n Network steady states: \n")    
-    
-    for(j in 1:ssc) {
-      cat(P[,j]);
-    }
-    
-    cat("=============================\n")
-    sink()
-    
-    # For better reading
-    sink(paste("N",n,"-X",p,"-Para.txt",sep=""))
-    for(node in 1:n) {
-      cat(P[i,]);
-    }
-    cat(M);
-    cat(N)
-    sink()
-    
-    sink(paste("N",n,"-X",p,"-SS.txt",sep=""))
-    for(j in 1:ssc) {
-      cat(P[,j]);
-    }
-    sink()
-    
-    Nstate[p] = ssc;
+    p = p + 1;
+    cat("round ", countcall, "\n");
+    countcall = countcall + 1;
   }
-  
-  p = p + 1;
-  cat("round ", countcall, "\n");
-  countcall = countcall + 1;
 }
 
 sink("SScount.txt")
