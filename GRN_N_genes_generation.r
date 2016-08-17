@@ -55,10 +55,10 @@
 rm(list=ls())
 require(deSolve) # load the ode package
 
-set.seed(1234)
+set.seed(123)
 Opath="./data_20160816/"
 
-num = 20         # network number 
+num = 10         # network number 
 n = 9           # gene
 trial = 50      # trial
 trshd = 1     # threshold for different states
