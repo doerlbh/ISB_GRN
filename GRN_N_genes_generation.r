@@ -223,7 +223,7 @@ while (p <= num) {
       
       dev.off()
       
-      sink(paste("N",n,"-X",p,"-S",ssc,".txt",sep=""))
+      sink(paste(Opath,"N",n,"-X",p,"-S",ssc,".txt",sep=""))
       
       cat(sprintf("Network %d with %d nodes has %d states:\n", p, n, ssc))
       cat("=============================\n")
@@ -249,19 +249,21 @@ while (p <= num) {
         cat(P[,j]);
       }
       
-      cat("=============================\n")
+      cat("\n=============================\n")
       sink()
       
       # For better reading
-      sink(paste("N",n,"-X",p,"-Para.txt",sep=""))
+      sink(Opath,paste("N",n,"-X",p,"-Para.txt",sep=""))
       for(node in 1:n) {
-        cat(P[i,]);
+        cat(P[node,]);
+        cat("\n")
       }
       cat(M);
+      cat("\n")
       cat(N)
       sink()
       
-      sink(paste("N",n,"-X",p,"-SS.txt",sep=""))
+      sink(Opath,paste("N",n,"-X",p,"-SS.txt",sep=""))
       for(j in 1:ssc) {
         cat(P[,j]);
       }
@@ -276,6 +278,6 @@ while (p <= num) {
   }
 }
 
-sink("SScount.txt")
+sink(Opath,"SScount.txt")
 cat("ss = ", Nstate, "\n");
 sink()
