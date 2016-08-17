@@ -56,7 +56,7 @@ rm(list=ls())
 require(deSolve) # load the ode package
 
 set.seed(1234)
-Opath="./data_20160817/"
+Opath="./data_20160816/"
 
 num = 2         # network number 
 n = 9           # gene
@@ -64,6 +64,7 @@ trial = 50      # trial
 trshd = 0.1     # threshold for different states
 sstrshd = 1e-3  # threshold for equilibrium of steady states
 tend = 6000     # threshold for equilibrium vs. non-equlibrium
+zthrs = 1e-2    # threshold for non-trivial states
 
 Nstate = mat.or.vec(num,1)  # store how many states each network can have
 
@@ -186,8 +187,10 @@ while (p <= num) {
     for (i in 1:trial){
       for (j in 1:round(length(Nss)/node)) {
         if (mean(abs(xr[i,,length(xr)/(n*trial)] - Nss[,j]))>trshd) {
-          ssc = ssc + 1;
-          Nss = cbind(Nss, xr[i,,length(xr)/(n*trial)]);        
+          if (mean(abs(xr[i,,length(xr)/(n*trial)]))>zthrs) {
+            ssc = ssc + 1;
+            Nss = cbind(Nss, xr[i,,length(xr)/(n*trial)]);        
+          }
         }
       }
     }
