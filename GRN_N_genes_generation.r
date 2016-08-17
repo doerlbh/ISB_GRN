@@ -148,17 +148,21 @@ while (p <= num) {
           }
         }
       }
-      if (mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-2])) < sstrshd) {
+      if (mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-3])) < sstrshd) {
         if (mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-5])) < sstrshd) { 
           if(mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-7])) < sstrshd) { 
-            equ = 1;
+            if(mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-9])) < sstrshd) { 
+              equ = 1;
+            } else {
+              equ = 0;
+            }
           } else {
             equ = 0;
           }
         } else {
           equ = 0;
         }
-      }else {
+      } else {
         equ = 0;
       }
       
@@ -227,7 +231,7 @@ while (p <= num) {
       cat("\n P is \n")
       
       for(node in 1:n) {
-        cat(P[i,]);
+        cat(P[node,]);
       }
       
       cat("\n M is \n")
