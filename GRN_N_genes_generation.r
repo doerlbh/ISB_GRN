@@ -61,14 +61,14 @@ Opath="./data_20160807/"
 num = 2      # network number 
 n = 9        # gene
 trial = 50  # trial
-trshd = 1e-7 # threshold for different states
-sstrshd = 1e-8       # threshold for equilibrium of steady states
+trshd = 0.1 # threshold for different states
+sstrshd = 1e-3       # threshold for equilibrium of steady states
 
 Nstate = mat.or.vec(num,1)  # store how many states each network can have
 
 # Starting values
-randset = 1000  # range of initial states
-Prandset = 10000 # range of parameters
+randset = 10  # range of initial states
+Prandset = 100 # range of parameters
 
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0 = randset*matrix(round(runif(trial*n),randset), trial, n) 

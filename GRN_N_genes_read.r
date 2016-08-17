@@ -125,11 +125,13 @@ while (c < trail) {
   parms = c()          # parameter (if necesarry)
   timesp = seq(0,pert,0.1) 
   
+  x0 = 
+  
   x0r <- x0[t,]
   res <- lsoda(x0r,times, func, parms)   # solve it
   res <- as.data.frame(res)             # make a data frame
   for (node in 1:n) {
-    xr[t,node,] <- res[,node+1]  
+    xr[node,] <- res[,node+1]  
   }
   
   
