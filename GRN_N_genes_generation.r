@@ -55,7 +55,7 @@
 rm(list=ls())
 require(deSolve) # load the ode package
 
-set.seed(11)
+set.seed(1)
 Opath="./data_20160817/"
 
 num = 5         # network number 
@@ -253,7 +253,7 @@ while (p <= num) {
       sink()
       
       # For better reading
-      sink(Opath,paste("N",n,"-X",p,"-Para.txt",sep=""))
+      sink(paste(Opath,"N",n,"-X",p,"-Para.txt",sep=""))
       for(node in 1:n) {
         cat(P[node,]);
         cat("\n")
@@ -263,7 +263,7 @@ while (p <= num) {
       cat(N)
       sink()
       
-      sink(Opath,paste("N",n,"-X",p,"-SS.txt",sep=""))
+      sink(paste(Opath,"N",n,"-X",p,"-SS.txt",sep=""))
       for(j in 1:ssc) {
         cat(P[,j]);
       }
@@ -278,6 +278,6 @@ while (p <= num) {
   }
 }
 
-sink(Opath,"SScount.txt")
+sink(paste(Opath,"SScount.txt",sep=""))
 cat("ss = ", Nstate, "\n");
 sink()
