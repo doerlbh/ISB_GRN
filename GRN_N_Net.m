@@ -7,23 +7,23 @@
 clear all;
 close all;
 
-rng(123);                 % randomizer
+rng(111);                 % randomizer
 
-pathN = '/Users/DoerLBH/Dropbox/git/ISB_GRN/data/Mtest5-20160818/';
+pathN = '/Users/DoerLBH/Dropbox/git/ISB_GRN/data/Mtest10-20160818/';
 system(['mkdir ' pathN]);
 
-num = 100;         % network number
-n = 4;           % gene
-trial = 20;      % trial
+num = 20;         % network number
+n = 9;           % gene
+trial = 50;      % trial
 ddtrshd = 1;       % threshold for different states
 sstrshd = 1;     % threshold for equilibrium of steady states
 tend = 3000;     % threshold for equilibrium vs. non-equlibrium
-zthrs = 10;       % threshold for non-trivial states
+zthrs = 1;       % threshold for non-trivial states
 
 % Starting values
-Nr = 500;  % range of initial states
-Pr = 1000; % range of parameters
-Ar = 100; % range of synthesis rate
+Nr = 20;  % range of initial states
+Pr = 500; % range of parameters
+Ar = 1000; % range of synthesis rate
 
 x0 = Nr*rand(trial, n);
 
@@ -60,10 +60,10 @@ parfor count = 1:num
         
         ph = 100;
         y0 = x0(t,:);
-        [y,ph,ss] = netrun(n,P,N,A,M,ph,1,y0,tend,sstrshd);
+        [y,ph,ss] = netrun(n,P,N,A,M,ph,1,y0,tend,sstrshd,zthrs);
         if ss == 1
             ssn = y(size(y,1),:);
-            if ~prod((abs(ssn)<zthrs))
+%             if ~prod((abs(ssn)<zthrs))
                 
                 if size(Nss,1) > 0
                     for st = 1:size(Nss,1)
@@ -83,7 +83,7 @@ parfor count = 1:num
                     parsaveas(gcf, filename,'png');
                     close gcf;   
                 end
-            end
+%             end
         end
     end
     ssc = size(Nss,1);
