@@ -61,7 +61,7 @@ parfor count = 1:num
         y0 = x0(t,:);
         [y,ph,ss] = netrun(n,P,N,A,M,ph,1,y0,tend,sstrshd);
         if ss == 1
-            ssn = y(size(y,2)).';
+            ssn = y(size(y,1),:).';
             if ~prod((abs(ssn)<zthrs))
                 Nss = vercat(Nss, ssn);
                 
