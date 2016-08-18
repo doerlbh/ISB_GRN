@@ -59,14 +59,14 @@ parfor count = 1:num
         
         ph = 100;
         y0 = x0(t,:);
-        [y,ph,ss] = netrun(n,P,N,A,M,ph,1,y0,tend);
+        [y,ph,ss] = netrun(n,P,N,A,M,ph,1,y0,tend,sstrshd);
         if ss == 1
             ssn = y(size(y,2)).';
             if ~prod((abs(ssn)<zthrs))
                 Nss = vercat(Nss, ssn);
                 
                 fig = figure;
-                plot(y.');
+                plot(y);
                 title(strcat('X',num2str(count),'-N',num2str(n),'-T',num2str(t)));
                 filename = strcat(pathN, 'X',num2str(count),'-N',num2str(n),'-T',num2str(t),'.png');
                 parsaveas(gcf, filename,'png');

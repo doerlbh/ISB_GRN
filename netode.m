@@ -1,6 +1,6 @@
 % Baihan Lin, August 2016
 
-function dydt = netode(t, y, P, N, A, M)
+function dydt = netode(t, y, P, N, A, M, n)
 % ode function used to generate networks
 
     dydt = zeros(n,1); 
