@@ -1,0 +1,23 @@
+% Baihan Lin, August 2016
+
+function dydt = netode(t,y)
+% ode function used to generate networks
+
+    dydt = zeros(n,1); 
+    parfor node = 1:n
+      temp1 = (N>0).*P(node,:).*y;
+      temp1(temp1 == 0) = 1;
+      temp2 = (N0).*P(node,:).*y;
+      temp2(temp2 == 0) = 1;
+      
+      temp2 = (N<0)*P[node,]*x
+      temp2[temp2 == 0] = 1
+      dx[node] = A[node]*prod(temp1)/(prod(1+temp1)*prod(1+temp2)) - M[node]*x[node]
+    end
+
+      dydt = zeros(2,1);
+dydt(1) = y(2);
+dydt(2) = (A/B)*t.*y(1);
+save(strcat(fpathN, fname, '.txt'), 'fACor', '-ascii');
+
+end

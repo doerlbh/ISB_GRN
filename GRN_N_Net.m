@@ -54,17 +54,24 @@ parfor countcall = 1:num
   M = rand(n,1);
   A = Ar*diag(P)/Pr;
   
-  for (node in 1:n) {
-    N[node,] = sample(c(1, 0,-1),n,TRUE)
-    N[node,node] = 0
-    #print(N)
-  }
+  parfor node = 1:n 
+    N(node,:) = randsample(-1:1,n,true);
+    N(node,node) = 0;
+  end
+  
+  
+  
+  A = 1;
+B = 2;
+tspan = [0 5];
+y0 = [0 0.01];
+[t,y] = ode45(@(t,y) odefcn(t,y,A,B), tspan, y0);
+  
   
   % ODE function
   func <- function(t,xx,p)
   {
     dx = zeros(n,1)
-    #print(length(xx))
     x = xx  
     for (node in 1:n) {
       temp1 = (N>0)*P[node,]*x
