@@ -40,6 +40,7 @@ P = zeros(n,n);   % parameters, i.e. gene-gene interaction (repress or activate)
 
 p = 1;           % num of generated networks (starting 1)
 
+% count = 1;
 parfor count = 1:num
     
     P = Pr*rand(n, n);
@@ -55,13 +56,14 @@ parfor count = 1:num
     %     xr = zeros(trial,n,1);
     
     Nss = [];
+    %     t = 1;
     for t = 1:trial
         
         ph = 100;
         y0 = x0(t,:);
         [y,ph,ss] = netrun(n,P,N,A,M,ph,1,y0,tend,sstrshd);
         if ss == 1
-            ssn = y(size(y,1),:).';
+            ssn = y(size(y,1),:);
             if ~prod((abs(ssn)<zthrs))
                 Nss = vercat(Nss, ssn);
                 

@@ -9,7 +9,7 @@ function dydt = netode(t, y, P, N, A, M, n)
       temp1(temp1 == 0) = 1;
       temp2 = (N<0).*P(node,:).*y;
       temp2(temp2 == 0) = 1;
-      dydt(node) = A(node).*prod(temp1)/(prod(1+temp1).*prod(1+temp2)) - M(node)*y(node);
+      dydt(node) = A(node).*prod(temp1)/(prod(1+temp1).*prod(1+temp2)) - M(node).*y(node);
     end
 
 end
