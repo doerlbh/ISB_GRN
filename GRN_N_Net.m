@@ -1,94 +1,50 @@
-# Creating n-gene networks
-# i) Create a n-gene network
-# ii) Determine how many steady states it can have in different parameters
-# iii) only keep those who have more than one steady states
-# iv) output the network states
-# Author: Baihan Lin
-# Date:   August 2016
+% GRN_N_Net
+% Creating n-gene multistate networks
 
-# Modified from:
-# Creating 9-gene networks
-# i) Create a nine-gene network
-# ii) Determine how many steady states it can have in different parameters
-# iii) only keep those who have more than one steady states
-# Author: Baihan Lin
-# Date:   July 2016
+% Author: Baihan Lin
+% Date:   August 2016
+clear all;
+close all;
 
-# Wild Bifurcation without huge assumptions in three-gene dynamics using ODE
-# iv) Determine how many steady states it can have in different parameters
-# v) Explore the bifurcation of the statess
-# Author: Baihan Lin
-# Date:   July 2016
+%% Initialization
 
-# Bifurcation in three-gene dynamics using ODE
-# iv) Determine how many steady states it can have in different parameters
-# v) Explore the bifurcation of the statess
-# Author: Baihan Lin
-# Date:   July 2016
+rng(123);                 % randomizer
 
-# Modified from:
-# Simulate three-gene dynamics using ODE
-# i) Calculate trajectories
-# ii) Plot gene time profiles
-# iii) Simulate different parameters input
-# iv) Determine how many steady states it can have in different parameters
-# v) Explore the bifurcation of the statess
-# Author: Baihan Lin
-# Date:   July 2016
-
-# Modified from: 
-# Model three-gene dynamics using ODE
-# i) Calculate trajectories
-# ii) Plot gene time profiles
-# iii) how many steady states it can have
-# iv) write a code to scan the parameters for different steady state.
-# Author: Baihan Lin
-# Date:   July 2016
-
-# Modified from: 
-# Model three-species food web dynamics using ODE
-# i) Calculate trajectories
-# ii) Plot species time profiles
-# Author: Joseph X. Zhou
-# Date:   Dec 2014
-
-rm(list=ls())
-require(deSolve) # load the ode package
 
 set.seed(1)
-Opath="./data_20160817/"
+Opath='./data_20160817/';
 
-num = 5         # network number 
-n = 4           # gene
-trial = 50      # trial
-trshd = 1       # threshold for different states
-sstrshd = 1     # threshold for equilibrium of steady states
-tend = 3000     # threshold for equilibrium vs. non-equlibrium
-zthrs = 1    # threshold for non-trivial states
+num = 5         % network number 
+n = 4           % gene
+trial = 50      % trial
+trshd = 1       % threshold for different states
+sstrshd = 1     % threshold for equilibrium of steady states
+tend = 3000     % threshold for equilibrium vs. non-equlibrium
+zthrs = 1    % threshold for non-trivial states
 
-Nstate = mat.or.vec(num,1)  # store how many states each network can have
+Nstate = mat.or.vec(num,1)  % store how many states each network can have
 
-# Starting values
-randset = 20  # range of initial states
-Prandset = 200 # range of parameters
+% Starting values
+randset = 20  % range of initial states
+Prandset = 200 % range of parameters
 
-x0 = mat.or.vec(trial,n)   # startvalues (genes)
+x0 = mat.or.vec(trial,n)   % startvalues (genes)
 x0 = randset*matrix(round(runif(trial*n),randset), trial, n) 
 
 temp1 = mat.or.vec(n,1)
 temp2 = mat.or.vec(n,1)
 
-# Direct parameter declaration:
-x = mat.or.vec(n,1)   # gene number
-A = mat.or.vec(n,n)   # gene sythesis rate
-M = mat.or.vec(n,1)   # gene degradation rate
-P = mat.or.vec(n,n)   # parameters, i.e. gene-gene interaction (repress or activate) 
-N = mat.or.vec(n,n)   # interaction types
+% Direct parameter declaration:
+x = mat.or.vec(n,1)   % gene number
+A = mat.or.vec(n,n)   % gene sythesis rate
+M = mat.or.vec(n,1)   % gene degradation rate
+P = mat.or.vec(n,n)   % parameters, i.e. gene-gene interaction (repress or activate) 
+N = mat.or.vec(n,n)   % interaction types
 
 p = 1;
 countcall = 1;
 while (p <= num) {
-  Nss = NULL      # store all the steady states 
+  Nss = NULL      % store all the steady states 
   ssc = 1;
   
   P = Prandset*matrix(round(runif(n*n),Prandset), n, n) 
@@ -101,7 +57,7 @@ while (p <= num) {
     #print(N)
   }
   
-  # ODE function
+  % ODE function
   func <- function(t,xx,p)
   {
     dx = mat.or.vec(n,1)
@@ -115,12 +71,12 @@ while (p <= num) {
       dx[node] = A[node]*prod(temp1)/(prod(1+temp1)*prod(1+temp2)) - M[node]*x[node]
     }
     
-    list(dx)    # give the change rates to the solver
+    list(dx)    % give the change rates to the solver
   }
   
-  # solve ODE
+  % solve ODE
   ph = 100
-  parms = c()          # parameter (if necesarry)
+  parms = c()          % parameter (if necesarry)
   times = seq(0,ph,0.1) 
   xr = array(rep(1, trial*n*length(times)), dim=c(trial,n,length(times)))
   
@@ -129,8 +85,8 @@ while (p <= num) {
     #print("t")
     #print(t);
     x0r <- x0[t,]
-    res <- lsoda(x0r,times, func, parms)   # solve it
-    res <- as.data.frame(res)             # make a data frame
+    res <- lsoda(x0r,times, func, parms)   % solve it
+    res <- as.data.frame(res)             % make a data frame
     for (node in 1:n) {
       xr[t,node,] <- res[,node+1]  
     }
@@ -159,9 +115,9 @@ while (p <= num) {
         } else {
           equ = 0;
         }
-        #} else {
-        # equ = 0;
-        #}
+        %} else {
+        % equ = 0;
+        %}
       } else {
         equ = 0;
       }
@@ -183,7 +139,7 @@ while (p <= num) {
   
   if (end == 0) {
     
-    # plot gene time profiles                                                       
+    % plot gene time profiles                                                       
     #graphics.off()
     #windows(xpos=1,ypos=-50,width=n,height=4)
     
@@ -253,7 +209,7 @@ while (p <= num) {
       cat("\n=============================\n")
       sink()
       
-      # For better reading
+      % For better reading
       sink(paste(Opath,"N",n,"-X",p,"-Para.txt",sep=""))
       for(node in 1:n) {
         cat(P[node,]);
