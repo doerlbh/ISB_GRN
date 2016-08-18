@@ -20,8 +20,6 @@ sstrshd = 1;     % threshold for equilibrium of steady states
 tend = 3000;     % threshold for equilibrium vs. non-equlibrium
 zthrs = 1;       % threshold for non-trivial states
 
-Nstate = zeros(num,1);  % store how many states each network can have
-
 % Starting values
 Nr = 20;  % range of initial states
 Pr = 200; % range of parameters
@@ -40,8 +38,8 @@ P = zeros(n,n);   % parameters, i.e. gene-gene interaction (repress or activate)
 
 p = 1;           % num of generated networks (starting 1)
 
-% count = 1;
-parfor count = 1:num
+count = 1;
+% parfor count = 1:num
     
     P = Pr*rand(n, n);
     M = rand(n,1);
@@ -65,7 +63,7 @@ parfor count = 1:num
         if ss == 1
             ssn = y(size(y,1),:);
             if ~prod((abs(ssn)<zthrs))
-                Nss = vercat(Nss, ssn);
+                Nss = vertcat(Nss, ssn);
                 
                 fig = figure;
                 plot(y);
@@ -91,6 +89,6 @@ parfor count = 1:num
     parsave(strcat(pathN, fname, '-N.txt'), 'N', '-ascii');
     parsave(strcat(pathN, fname, '-M.txt'), 'M', '-ascii');
     
-end
+% end
 
 
