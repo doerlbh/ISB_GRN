@@ -26,33 +26,34 @@ zthrs = 1;       % threshold for non-trivial states
 Nstate = zeros(num,1);  % store how many states each network can have
 
 % Starting values
-Nr = 20;  % range of initial states
-Pr = 200; % range of parameters
-Pr = 100; % range of synthesis rate
+randset = 20  % range of initial states
+Prandset = 200 % range of parameters
 
-x0 = zeros(trial,n);   % startvalues (genes)
-x0 = Nr*rand(trial, n); 
+x0 = zeros(trial,n)   % startvalues (genes)
+x0 = randset*matrix(round(runif(trial*n),randset), trial, n) 
 
-temp1 = zeros(n,1);
-temp2 = zeros(n,1);
+temp1 = zeros(n,1)
+temp2 = zeros(n,1)
 
 % Direct parameter declaration:
 x = zeros(n,1);   % gene number
-A = zeros(n,n);   % gene sythesis rate
-M = zeros(n,1);   % gene degradation rate
-P = zeros(n,n);   % parameters, i.e. gene-gene interaction (repress or activate) 
-N = zeros(n,n);   % interaction types
+A = zeros(n,n)   % gene sythesis rate
+M = zeros(n,1)   % gene degradation rate
+P = zeros(n,n)   % parameters, i.e. gene-gene interaction (repress or activate) 
+N = zeros(n,n)   % interaction types
 
-p = 1;           % num of generated networks (starting 1)
+p = 1;
+countcall = 1;
 
-parfor countcall = 1:num
+parfor it = 1:10
+    
+while (p <= num) {
+  Nss = zeros(n,1);      % store all the steady states 
+  ssc = 1;
   
-    Nss = zeros(n,1);      % store all the steady states
-    ssc = 1;
-  
-  P = Pr*rand(n, n); 
-  M = rand(n,1);
-  A = Ar*diag(P)/Pr;
+  P = Prandset*matrix(round(runif(n*n),Prandset), n, n) 
+  M = matrix(round(runif(n*1), Prandset),n,1)
+  A = 100*diag(P)
   
   for (node in 1:n) {
     N[node,] = sample(c(1, 0,-1),n,TRUE)
