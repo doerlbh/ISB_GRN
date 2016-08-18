@@ -58,19 +58,19 @@ require(deSolve) # load the ode package
 set.seed(123)
 Opath="./data_20160817/"
 
-num = 10         # network number 
+num = 5         # network number 
 n = 9           # gene
 trial = 50      # trial
 trshd = 1     # threshold for different states
-sstrshd = 1e-1  # threshold for equilibrium of steady states
-tend = 6000     # threshold for equilibrium vs. non-equlibrium
-zthrs = 5e-1    # threshold for non-trivial states
+sstrshd = 1  # threshold for equilibrium of steady states
+tend = 3000     # threshold for equilibrium vs. non-equlibrium
+zthrs = 1e-1    # threshold for non-trivial states
 
 Nstate = mat.or.vec(num,1)  # store how many states each network can have
 
 # Starting values
 randset = 10  # range of initial states
-Prandset = 100 # range of parameters
+Prandset = 200 # range of parameters
 
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
 x0 = randset*matrix(round(runif(trial*n),randset), trial, n) 
