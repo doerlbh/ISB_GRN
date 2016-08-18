@@ -1,0 +1,25 @@
+% Baihan Lin, August 2016
+
+function [y,nph,eq] = netrun(P,N,A,M,ph,eq,y0)
+% run networks
+
+ph = 100;
+tspan = 0:0.1:ph;
+
+if ~eq
+    ph = 2*ph;
+    tspan = 0:0.1:ph;
+end
+
+[y,nph,neq] = netrun(P,N,A,M,ph,eq,y0)
+
+[t,y] = ode45(@(t,y) netode(t,y,P,N,A,M), tspan, y0);
+
+c = size(y,2);
+neq = (abs(mean(y(:,c)-y(:,c-2))) < sstrshd);
+neq = neq*(abs(mean(y(:,c)-y(:,c-4))) < sstrshd);
+neq = neq*(abs(mean(y(:,c)-y(:,c-6))) < sstrshd);
+nph = ph;
+
+
+end
