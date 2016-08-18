@@ -55,21 +55,21 @@
 rm(list=ls())
 require(deSolve) # load the ode package
 
-set.seed(123)
+set.seed(11)
 Opath="./data_20160817/"
 
 num = 5         # network number 
 n = 9           # gene
 trial = 50      # trial
-trshd = 1     # threshold for different states
-sstrshd = 1  # threshold for equilibrium of steady states
+trshd = 1       # threshold for different states
+sstrshd = 1     # threshold for equilibrium of steady states
 tend = 3000     # threshold for equilibrium vs. non-equlibrium
-zthrs = 1e-1    # threshold for non-trivial states
+zthrs = 1e-2    # threshold for non-trivial states
 
 Nstate = mat.or.vec(num,1)  # store how many states each network can have
 
 # Starting values
-randset = 10  # range of initial states
+randset = 20  # range of initial states
 Prandset = 200 # range of parameters
 
 x0 = mat.or.vec(trial,n)   # startvalues (genes)
@@ -151,17 +151,17 @@ while (p <= num) {
       if (mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-3])) < sstrshd) {
         if (mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-5])) < sstrshd) { 
           if(mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-7])) < sstrshd) { 
-            if(mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-9])) < sstrshd) { 
-              equ = 1;
-            } else {
-              equ = 0;
-            }
+            #if(mean(abs(xrt[t,,length(times)]-xrt[t,,length(times)-9])) < sstrshd) { 
+            equ = 1;
           } else {
             equ = 0;
           }
         } else {
           equ = 0;
         }
+        #} else {
+        # equ = 0;
+        #}
       } else {
         equ = 0;
       }
