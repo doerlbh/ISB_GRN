@@ -59,7 +59,7 @@ parfor count = 1:num
         
         ph = 100;
         y0 = x0(t,:);
-        [y,ph,ss] = netrun(P,N,A,M,ph,1,y0,tend);
+        [y,ph,ss] = netrun(n,P,N,A,M,ph,1,y0,tend);
         if ss == 1
             ssn = y(size(y,2)).';
             if ~prod((abs(ssn)<zthrs))
