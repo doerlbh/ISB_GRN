@@ -9,26 +9,27 @@ close all;
 
 rng(123);                 % randomizer
 
-pathN = '/Users/DoerLBH/Dropbox/git/ISB_GRN/data/Mtest3-20160818/';
+pathN = '/Users/DoerLBH/Dropbox/git/ISB_GRN/data/Mtest5-20160818/';
 system(['mkdir ' pathN]);
 
-num = 10;         % network number
+num = 100;         % network number
 n = 4;           % gene
 trial = 20;      % trial
 ddtrshd = 1;       % threshold for different states
 sstrshd = 1;     % threshold for equilibrium of steady states
 tend = 3000;     % threshold for equilibrium vs. non-equlibrium
-zthrs = 1;       % threshold for non-trivial states
+zthrs = 10;       % threshold for non-trivial states
 
 % Starting values
-Nr = 20;  % range of initial states
-Pr = 200; % range of parameters
+Nr = 500;  % range of initial states
+Pr = 1000; % range of parameters
 Ar = 100; % range of synthesis rate
 
 x0 = Nr*rand(trial, n);
 
 temp1 = zeros(n,1);
 temp2 = zeros(n,1);
+samess = zeros(num,1);
 
 % Direct parameter declaration:
 x = zeros(n,1);   % gene number
@@ -72,7 +73,7 @@ parfor count = 1:num
                     samess(count) = 0;
                 end
                 
-                if ~samess(count)
+                if samess(count) == 0
                     Nss = vertcat(Nss, ssn);
                     
                     fig = figure;
@@ -101,5 +102,4 @@ parfor count = 1:num
     parsave(strcat(pathN, fname, '-M.txt'), M, '-ascii');
     
 end
-
 
