@@ -24,7 +24,7 @@ zthrs = 1;       % threshold for non-trivial states
 Nr = 20;  % range of initial states
 Pr = 50;  % range of parameters
 Ar = 100; % range of synthesis rate
-pow = 4;  % range of power increase
+pow = 3;  % range of power increase
 
 x0 = Nr*rand(trial, n);
 

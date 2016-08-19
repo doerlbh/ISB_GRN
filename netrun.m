@@ -11,10 +11,10 @@ else
     end
     
     tspan = 0:0.1:ph;
-
-        [t,y] = ode45(@(t,y) netodepownorm(t,y,P,N,A,M,n,pow), tspan, y0);
-%     [t,y] = ode45(@(t,y) netodepow(t,y,P,N,A,M,n), tspan, y0);
-%     [t,y] = ode45(@(t,y) netode(t,y,P,N,A,M,n), tspan, y0);
+    
+    [t,y] = ode45(@(t,y) netodepownorm(t,y,P,N,A,M,n,pow), tspan, y0);
+    %     [t,y] = ode45(@(t,y) netodepow(t,y,P,N,A,M,n), tspan, y0);
+    %     [t,y] = ode45(@(t,y) netode(t,y,P,N,A,M,n), tspan, y0);
     y = nontrivial(y,zthrs);
     c = size(y,1);
     neq = (abs(mean(y(c-2,:)-y(c,:))) < sstrshd);
