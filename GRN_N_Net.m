@@ -9,7 +9,7 @@ close all;
 
 rng(100);                 % randomizer
 
-pathN = '/Users/DoerLBH/Dropbox/git/ISB_GRN/data/Mtest14-20160818/';
+pathN = '/Users/DoerLBH/Dropbox/git/ISB_GRN/data/Mtest15-20160818/';
 system(['mkdir ' pathN]);
 
 num = 20;         % network number
@@ -24,7 +24,7 @@ zthrs = 1;       % threshold for non-trivial states
 Nr = 50;  % range of initial states
 Pr = 10;  % range of parameters
 Ar = 100; % range of synthesis rate
-pow = 3;  % range of power increase
+pow = 6;  % range of power increase
 
 x0 = Nr*rand(trial, n);
 
