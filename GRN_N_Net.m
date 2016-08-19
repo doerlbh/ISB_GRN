@@ -9,7 +9,7 @@ close all;
 
 rng(100);                 % randomizer
 
-pathN = '/Users/DoerLBH/Dropbox/git/ISB_GRN/data/Mtest13-20160818/';
+pathN = '/Users/DoerLBH/Dropbox/git/ISB_GRN/data/Mtest14-20160818/';
 system(['mkdir ' pathN]);
 
 num = 20;         % network number
@@ -21,8 +21,8 @@ tend = 3000;     % threshold for equilibrium vs. non-equlibrium
 zthrs = 1;       % threshold for non-trivial states
 
 % Starting values
-Nr = 20;  % range of initial states
-Pr = 50;  % range of parameters
+Nr = 50;  % range of initial states
+Pr = 10;  % range of parameters
 Ar = 100; % range of synthesis rate
 pow = 3;  % range of power increase
 
