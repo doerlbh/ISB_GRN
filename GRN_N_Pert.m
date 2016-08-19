@@ -1,5 +1,5 @@
-% GRN_N_Net
-% Creating n-gene multistate networks
+% GRN_N_Pert
+% Perturbating n-gene multistate networks
 % Author: Baihan Lin
 % Date:   August 2016
 
@@ -7,42 +7,45 @@
 clear all;
 close all;
 
-rng(100);                 % randomizer
+rng(111);                 % randomizer
 
-pathN = '/Users/DoerLBH/Dropbox/git/ISB_GRN/data/Mtest13-20160818/';
+pathN = '/Users/DoerLBH/Dropbox/git/ISB_GRN/data/Mtest11-20160818/';
+pathI = '/Users/DoerLBH/Dropbox/git/ISB_GRN/data/Mtest11-20160818/';
 system(['mkdir ' pathN]);
 
-num = 20;         % network number
-n = 9;           % gene
-trial = 50;      % trial
-ddtrshd = 1;       % threshold for different states
-sstrshd = 1;     % threshold for equilibrium of steady states
-tend = 3000;     % threshold for equilibrium vs. non-equlibrium
-zthrs = 1;       % threshold for non-trivial states
+% prompt = 'What is your folder?: ';
+% disp('e.g.  /Users/DoerLBH/Dropbox/git/ISB_GRN/data/Mtest11-20160818/');
+% pathI = input(prompt,'s');
 
-% Starting values
-Nr = 20;  % range of initial states
-Pr = 50;  % range of parameters
-Ar = 100; % range of synthesis rate
-pow = 4;  % range of power increase
+% [~,list] = system(['find ' path ' -type f -name "MX*.txt"']);
+%     
+% files = strsplit(list);
+% length(files);
+% 
+% for countfile = 1:length(files)
+%     trials{countfile} = files{countfile}(1:end-11);
+% end
+% 
+% trials = unique(trials);
+% trials = trials(~cellfun('isempty',trials));
+% 
+% index = strfind(files, trials{1});
+% 
+% for t = 1 : length(trials)
+%     filename = trials{t};
+%     indexsep = strfind(filename,'/');
+%     last = indexsep(end);
+%     
+%     index = strfind(files, filename);
+%     indexmat = cell2mat(index);
+%     [~,first,~] = unique(indexmat, 'first');
+%     fast_arrange_Intan_RHD(files{first(1)});
+%     
+%     casename = strtok(filename(last+1:end), '_');
+%     
 
-x0 = Nr*rand(trial, n);
-
-samess = zeros(num,1);
-
-% Direct parameter declaration:
-x = zeros(n,1);   % gene number
-A = zeros(n,n);   % gene sythesis rate
-M = zeros(n,1);   % gene degradation rate
-P = zeros(n,n);   % parameters, i.e. gene-gene interaction (repress or activate)
-
-p = 1;           % num of generated networks (starting 1)
-
-% count = 1;
-parfor count = 1:num
-    
-    P = Pr*rand(n, n);
-    M = rand(n,1);
+    P = = dlmread(strcat(pathI,));
+    M = = dlmread();
     A = Ar*diag(P)/Pr;
     N = zeros(n,n);
     
@@ -59,9 +62,9 @@ parfor count = 1:num
         
         ph = 100;
         y0 = x0(t,:);
-        [y,ph,ss] = netrun(n,P,N,A,M,ph,1,y0,tend,sstrshd,zthrs,pow);
+        [y,ph,ss] = netrun(n,P,N,A,M,ph,1,y0,tend,sstrshd,zthrs);
         if ss == 1
-            ssn = real(y(size(y,1),:));
+            ssn = y(size(y,1),:);
 %             if ~prod((abs(ssn)<zthrs))
                 
                 if size(Nss,1) > 0
@@ -76,7 +79,7 @@ parfor count = 1:num
                     Nss = vertcat(Nss, ssn);
                     
                     fig = figure;
-                    plot(real(y));
+                    plot(y);
                     title(strcat('X',num2str(count),'-N',num2str(n),'-T',num2str(t)));
                     filename = strcat(pathN, 'X',num2str(count),'-N',num2str(n),'-T',num2str(t),'.png');
                     parsaveas(gcf, filename,'png');
@@ -100,5 +103,5 @@ parfor count = 1:num
     parsave(strcat(pathN, fname, '-N.txt'), N, '-ascii');
     parsave(strcat(pathN, fname, '-M.txt'), M, '-ascii');
     
-end
+
 

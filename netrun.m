@@ -1,6 +1,6 @@
 % Baihan Lin, August 2016
 
-function [y,nph,ss] = netrun(n,P,N,A,M,ph,eq,y0,tend,sstrshd,zthrs)
+function [y,nph,ss] = netrun(n,P,N,A,M,ph,eq,y0,tend,sstrshd,zthrs,pow)
 % run networks
 
 if ph > tend
@@ -11,8 +11,10 @@ else
     end
     
     tspan = 0:0.1:ph;
-    
-    [t,y] = ode45(@(t,y) netode(t,y,P,N,A,M,n), tspan, y0);
+
+        [t,y] = ode45(@(t,y) netodepownorm(t,y,P,N,A,M,n,pow), tspan, y0);
+%     [t,y] = ode45(@(t,y) netodepow(t,y,P,N,A,M,n), tspan, y0);
+%     [t,y] = ode45(@(t,y) netode(t,y,P,N,A,M,n), tspan, y0);
     y = nontrivial(y,zthrs);
     c = size(y,1);
     neq = (abs(mean(y(c-2,:)-y(c,:))) < sstrshd);
@@ -21,7 +23,7 @@ else
     nph = ph;
     ss = 1;
     if ~neq
-        [y,nph,ss] = netrun(n,P,N,A,M,nph,1,y0,tend,sstrshd,zthrs);
+        [y,nph,ss] = netrun(n,P,N,A,M,nph,1,y0,tend,sstrshd,zthrs,pow);
     end
 end
 end
